@@ -1,4 +1,5 @@
 <?php
+$page_title = "Banco del estudiante :: Registrar un nuevo usuario";
 require_once './views/common/header.php';
 ?>
 <body class="theme-light">
