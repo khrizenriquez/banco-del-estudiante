@@ -2,10 +2,10 @@
 class TellerController {
     public function __construct() {
         session_start();
-        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'teller') {
+        /*if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'teller') {
             header('Location: index.php?action=login&error=unauthorized');
             exit();
-        }
+        }*/
     }
 
     public function dashboard() {

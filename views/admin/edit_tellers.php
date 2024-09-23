@@ -1,5 +1,5 @@
 <?php
-$page_title = "Transferencia a terceros :: Banco del estudiante";
+$page_title = "Editar usuarios :: Banco del estudiante";
 require_once './views/common/logged-header.php';
 ?>
 

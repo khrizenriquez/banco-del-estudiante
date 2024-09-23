@@ -2,11 +2,11 @@
 
 class AdminController {
     public function __construct() {
-        session_start();
-        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-            header('Location: index.php?action=login&error=unauthorized');
-            exit();
-        }
+//        session_start();
+//        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+//            header('Location: index.php?action=login&error=unauthorized');
+//            exit();
+//        }
     }
 
     public function dashboard() {
