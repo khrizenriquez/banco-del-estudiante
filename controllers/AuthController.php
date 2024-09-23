@@ -38,5 +38,13 @@ class AuthController {
         include 'views/auth/login.php';
     }
 
+    public function showRegisterForm() {
+        include 'views/auth/register_user.php';
+    }
+
+    public function showForgotPasswordForm() {
+        include 'views/auth/forgot_password.php';
+    }
+
 }
 ?>
