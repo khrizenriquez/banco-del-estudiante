@@ -28,5 +28,17 @@ class UserController {
     public function viewUsers() {
         include 'views/user/view_users.php';
     }
+
+    public function addThirdPartyAccount() {
+        include 'views/user/add_third_party_account.php';
+    }
+
+    public function viewTransfer() {
+        include 'views/user/transfer.php';
+    }
+
+    public function viewAccountStatement() {
+        include 'views/user/account_statement.php';
+    }
 }
 ?>

@@ -22,16 +22,26 @@ $path = trim(str_replace('/desarrolloweb/banco-del-estudiante', '', $request_uri
 // Default to home if no path is provided
 $action = $path ?: 'home';
 
-printf($path);
+// Update for dynamic routes
+foreach ($routes as $route => $controllerAction) {
+    // replace {id} with a numerical regular expression
+    $pattern = preg_replace('/\{[a-zA-Z_]+\}/', '([0-9]+)', $route);
 
-if (isset($routes[$path])) {
-    list($controller, $action) = explode('@', $routes[$path]);
+    if (preg_match('#^' . $pattern . '$#', $path, $matches)) {
+        array_shift($matches); // Remove the first match
 
-    $controllerInstance = new $controller();
-    $controllerInstance->$action();
-} else {
-    include 'views/auth/info.php';
+        // Split the controller and method e.g. TellerController@editUser
+        list($controller, $method) = explode('@', $controllerAction);
+
+        $controllerInstance = new $controller();
+        call_user_func_array([$controllerInstance, $method], $matches);
+        exit; // Stop the loop
+    }
 }
+
+// Default to register if no action matches
+$authController = new AuthController();
+$authController->showLoginForm();
 
 //switch ($action) {
 //    case 'login':

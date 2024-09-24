@@ -2,21 +2,21 @@
 $routes = require 'config/routes.php';
 
 $user_name = 'John Doe';
-$user_role = 'teller';
+$user_role = 'admin';
 $local_base_path = '/desarrolloweb/banco-del-estudiante';
 
-$menu_options = ['Cerrar sesión' => '/logout'];
+$menu_options = ['<i class="fa-solid fa-arrow-right-from-bracket"></i>' => '/logout'];
 // Check the routes.php file to know the exact route for each role
 if ($user_role === 'admin') {
     $menu_options = array_merge([
         'Gestionar cajeros' => '/admin/dashboard',
-        'Crear usuarios' => '/admin/dashboard/create',
+        'Crear cajeros' => '/admin/usuarios',
         'Monitor de transferencias' => '/admin/monitor'
     ], $menu_options);
 } elseif ($user_role === 'teller') {
     $menu_options = array_merge([
-        'Crear usuarios' => '/teller-dashboard',
-        'Gestionar usuarios' => '/teller/crear-usuarios',
+        'Gestionar usuarios' => '/teller/dashboard',
+        'Crear usuarios' => '/teller/usuarios',
         'Depositos' => '/teller/depositos',
         'Retiros' => '/teller/retiros',
     ], $menu_options);
@@ -34,7 +34,7 @@ $menu_without_last = array_slice($menu_options, 0, -1);
 $last_menu_item = end($menu_options);
 $last_menu_label = key($menu_options);
 ?>
-<p>🏦 Bienvenido, <?= htmlspecialchars($user_name); ?>!</p>
+<p class="text-center has-background-link-15 has-text-primary-15-invert">🏦 Bienvenido, <?= htmlspecialchars($user_name); ?>!</p>
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -58,7 +58,7 @@ $last_menu_label = key($menu_options);
             <div class="navbar-item">
                 <div class="buttons">
                     <a class="button is-danger" href="<?= $local_base_path.$last_menu_item; ?>">
-                        <strong><?= htmlspecialchars($last_menu_label); ?></strong>
+                        <strong><?= $last_menu_label; ?></strong>
                     </a>
                 </div>
             </div>

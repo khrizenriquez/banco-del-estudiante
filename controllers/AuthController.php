@@ -46,5 +46,17 @@ class AuthController {
         include 'views/auth/forgot_password.php';
     }
 
+    public function showServerInfo() {
+        include 'views/auth/info.php';
+    }
+
+    public function logout() {
+        $local_base_path = '/desarrolloweb/banco-del-estudiante';
+        //session_start();
+        //session_destroy();
+        header("Location: $local_base_path/");
+        exit();
+    }
+
 }
 ?>
