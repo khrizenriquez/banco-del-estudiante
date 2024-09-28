@@ -1,6 +1,7 @@
 <?php
 $local_base_path = '/desarrolloweb/banco-del-estudiante';
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,5 +14,5 @@ $local_base_path = '/desarrolloweb/banco-del-estudiante';
 
     <link rel="stylesheet" href="<?= $local_base_path; ?>/assets/css/vendor/bulma/bulma.min.css">
     <link rel="stylesheet" href="<?= $local_base_path; ?>/assets/css/general.css">
-    <link rel="stylesheet" href="<?= $local_base_path; ?>/assets/css/auth.css">
+    <link rel="stylesheet" href="<?= $local_base_path; ?>/assets/css/styles.css">
 </head>

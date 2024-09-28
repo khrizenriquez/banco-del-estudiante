@@ -1,23 +1,44 @@
 <?php
+
 class UserController {
-    public function authenticate($username, $password, $password_hash, $id, $role) {
-        // Conectar a la base de datos y verificar las credenciales
-        $db = Database::getConnection();
-
-        $stmt = $db->prepare("SELECT id, role, password_hash FROM users WHERE username = ? OR email = ?");
-        $stmt->bind_param("ss", $username, $username);
-        $stmt->execute();
-        $stmt->bind_result($id, $role, $password_hash);
-        $stmt->fetch();
-
-        if ($id && password_verify($password, $password_hash)) {
-            return ['id' => $id, 'role' => $role];
-        } else {
-            return false;
-        }
+    public function __construct() {
+//        session_start();
+//        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
+//            header('Location: index.php?action=login&error=unauthorized');
+//            exit();
+//        }
     }
 
-    // Otros métodos del modelo de usuario
-}
+    public function dashboard() {
+        include 'views/user/dashboard.php';
+    }
 
+    public function createUser() {
+        include 'views/user/create_user.php';
+    }
+
+    public function createAccount() {
+        include 'views/user/create_account.php';
+    }
+
+    public function viewAccounts() {
+        include 'views/user/view_accounts.php';
+    }
+
+    public function viewUsers() {
+        include 'views/user/view_users.php';
+    }
+
+    public function addThirdPartyAccount() {
+        include 'views/user/add_third_party_account.php';
+    }
+
+    public function viewTransfer() {
+        include 'views/user/transfer.php';
+    }
+
+    public function viewAccountStatement() {
+        include 'views/user/account_statement.php';
+    }
+}
 ?>

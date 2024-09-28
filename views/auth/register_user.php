@@ -1,10 +1,50 @@
-<div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda, debitis illo laboriosam repellendus similique
-    temporibus ut. Animi aspernatur corporis cumque distinctio doloremque ipsum minus mollitia, nesciunt quaerat
-    quibusdam sint tenetur!
-</div>
-<div>A adipisci aliquid aperiam beatae dicta, dolore dolores eaque enim et eum fugiat id labore minus molestiae nam
-    neque nesciunt odio officia placeat possimus, provident quaerat quis rem repudiandae voluptatem?
-</div>
-<div>Dicta eaque earum enim exercitationem facere iusto, magnam nesciunt, quos rem repellat ullam vel, velit voluptas.
-    Cum, deserunt hic ipsam itaque minus officia porro ut veniam veritatis vitae voluptas voluptatibus.
-</div>
+<?php
+$page_title = "Banco del estudiante :: Registrar un nuevo usuario";
+require_once './views/common/header.php';
+?>
+<body class="theme-light">
+
+<section class="section">
+    <div class="container login-container">
+        <div class="box">
+            <img class="logo" src="./assets/images/umg-logo.png" alt="Logo">
+            <h1 class="title">Crear cuenta</h1>
+            <form action="/register" method="POST">
+                <div class="field">
+                    <div class="control">
+                        <input class="input" type="text" placeholder="Número de cuenta" name="account_number" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input class="input" type="email" placeholder="Correo" name="email" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input class="input" type="text" placeholder="DPI" name="dpi" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input class="input" type="password" placeholder="Clave" name="password" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input class="input" type="password" placeholder="Confirmar Clave" name="confirm_password" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input class="button is-primary is-fullwidth" type="submit" value="Registrar">
+                    </div>
+                </div>
+            </form>
+            <a href="<?= $local_base_path; ?>/login">¿Ya tienes cuenta? Iniciar sesión</a>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
