@@ -1,11 +1,15 @@
 <?php
+require_once 'LoginController.php';
 class AuthController {
     public function login() {
-        $username = $_POST['username'];
+        var_dump($_POST);
+        var_dump($_GET);
+        var_dump("session id ". session_id());
+        $username = $_POST['email'];
         $password = $_POST['password'];
 
-        $userModel = new User();
-        $user = $userModel->authenticate($username, $password);
+        $loginController = new LoginController();
+        $user = $loginController->authenticate($username, $password);
 
         if ($user) {
             session_start();
@@ -14,12 +18,12 @@ class AuthController {
 
             switch ($user['role']) {
                 case 'admin':
-                    header('Location: index.php?action=admin_dashboard');
+                    //header('Location: index.php?action=admin_dashboard');
                     break;
                 case 'teller':
                     header('Location: index.php?action=teller_dashboard');
                     break;
-                case 'user':
+                case 'customer':
                     header('Location: index.php?action=user_dashboard');
                     break;
                 default:
@@ -52,7 +56,7 @@ class AuthController {
 
     public function logout() {
         //session_start();
-        //session_destroy();
+        session_destroy();
         header("Location: BASE_PATH/");
         exit();
     }

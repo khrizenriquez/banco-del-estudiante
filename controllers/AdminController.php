@@ -2,11 +2,12 @@
 
 class AdminController {
     public function __construct() {
-//        session_start();
-//        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-//            header('Location: index.php?action=login&error=unauthorized');
-//            exit();
-//        }
+        require_once 'session_check.php';
+
+        if ($_SESSION['role'] !== 'admin') {
+            header('Location: index.php?action=login&error=unauthorized');
+            exit();
+        }
     }
 
     public function dashboard() {
@@ -65,17 +66,9 @@ class AdminController {
     }
 
     private function updateUserStatus($id, $status) {
-        $pdo = new PDO('mysql:host=localhost;dbname=Proyecto_2_Desarrollo_Web', 'root', '');
-        $stmt = $pdo->prepare('UPDATE users SET status = ? WHERE user_id = ?');
-        $stmt->execute([$status, $id]);
     }
 
     private function getUserById($id) {
-        $pdo = new PDO('mysql:host=localhost;dbname=Proyecto_2_Desarrollo_Web', 'root', '');
-        $stmt = $pdo->prepare('SELECT * FROM users WHERE user_id = ?');
-        $stmt->execute([$id]);
-
-        return $stmt->fetch();
     }
 }
 ?>

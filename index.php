@@ -17,10 +17,19 @@ require_once 'controllers/UserController.php';
 
 // Parse the URL path
 $request_uri = explode('?', $_SERVER['REQUEST_URI'], 2);
-$path = trim(str_replace('/desarrolloweb/banco-del-estudiante', '', $request_uri[0]), '/');
+$path = trim(str_replace(BASE_PATH, '', $request_uri[0]), '/');
 
 // Default to home if no path is provided
 $action = $path ?: 'home';
+
+var_dump($path);
+var_dump($_SERVER['REQUEST_METHOD']);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($path === 'login' || $path === 'index.php')) {
+    $authController = new AuthController();
+    $authController->login();
+    exit();
+}
 
 // Update for dynamic routes
 foreach ($routes as $route => $controllerAction) {

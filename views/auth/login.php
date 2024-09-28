@@ -7,17 +7,17 @@ require_once './views/common/header.php';
 <section class="section">
     <div class="container login-container">
         <div class="box">
-            <img class="logo" src="./assets/images/umg-logo.png" alt="Logo">
+            <img class="logo" src="<?= BASE_PATH; ?>/assets/images/umg-logo.png" alt="Logo">
             <h1 class="title">Inicia sesión</h1>
-            <form action="/login" method="POST">
+            <form action="<?= BASE_PATH; ?>/login" method="POST">
                 <div class="field">
                     <div class="control">
-                        <input class="input" type="text" placeholder="Correo" name="email" required>
+                        <input class="input" type="text" placeholder="Correo" name="email" required value="toor@miumg.edu.gt">
                     </div>
                 </div>
                 <div class="field">
                     <div class="control">
-                        <input class="input" type="password" placeholder="Clave" name="password" required>
+                        <input class="input" type="password" placeholder="Clave" name="password" required value="toor">
                     </div>
                 </div>
                 <div class="field">

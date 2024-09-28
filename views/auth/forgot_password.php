@@ -6,7 +6,7 @@ require_once './views/common/header.php';
 <section class="section">
     <div class="container login-container">
         <div class="box">
-            <img class="logo" src="./assets/images/umg-logo.png" alt="Logo">
+            <img class="logo" src="<?= BASE_PATH; ?>/assets/images/umg-logo.png" alt="Logo">
             <h1 class="title">Olvidé la contraseña</h1>
             <form action="/forgot-password" method="POST">
                 <div class="field">
