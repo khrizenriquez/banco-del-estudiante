@@ -20,7 +20,7 @@ require_once './views/common/header.php';
                     </div>
                 </div>
             </form>
-            <a href="<?= $local_base_path; ?>/login">Regresar al inicio de sesión</a>
+            <a href="<?= BASE_PATH; ?>/login">Regresar al inicio de sesión</a>
         </div>
     </div>
 </section>

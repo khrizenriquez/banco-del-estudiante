@@ -69,8 +69,8 @@ require_once './views/common/logged-menu.php';
                 <td>Activo</td>
                 <td>2023-09-20</td>
                 <td>
-                    <a href="<?= $local_base_path; ?>/admin/usuarios/<?= '122'; ?>" class="button is-small is-warning">Editar</a>
-                    <a href="<?= $local_base_path; ?>/admin/usuarios/<?= '122'; ?>/bloquear" class="button is-small is-danger">Bloquear</a>
+                    <a href="<?= BASE_PATH; ?>/admin/usuarios/<?= '122'; ?>" class="button is-small is-warning">Editar</a>
+                    <a href="<?= BASE_PATH; ?>/admin/usuarios/<?= '122'; ?>/bloquear" class="button is-small is-danger">Bloquear</a>
                 </td>
             </tr>
 
@@ -93,8 +93,8 @@ require_once './views/common/logged-menu.php';
                 <td>Bloqueado</td>
                 <td>2023-07-05</td>
                 <td>
-                    <a href="<?= $local_base_path; ?>/admin/usuarios/<?= '122'; ?>" class="button is-small is-warning">Editar</a>
-                    <a href="<?= $local_base_path; ?>/admin/usuarios/<?= '122'; ?>" class="button is-small is-link">Desbloquear</a>
+                    <a href="<?= BASE_PATH; ?>/admin/usuarios/<?= '122'; ?>" class="button is-small is-warning">Editar</a>
+                    <a href="<?= BASE_PATH; ?>/admin/usuarios/<?= '122'; ?>" class="button is-small is-link">Desbloquear</a>
                 </td>
             </tr>
             </tbody>

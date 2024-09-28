@@ -41,7 +41,7 @@ require_once './views/common/header.php';
                     </div>
                 </div>
             </form>
-            <a href="<?= $local_base_path; ?>/login">¿Ya tienes cuenta? Iniciar sesión</a>
+            <a href="<?= BASE_PATH; ?>/login">¿Ya tienes cuenta? Iniciar sesión</a>
         </div>
     </div>
 </section>

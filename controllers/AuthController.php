@@ -51,10 +51,9 @@ class AuthController {
     }
 
     public function logout() {
-        $local_base_path = '/desarrolloweb/banco-del-estudiante';
         //session_start();
         //session_destroy();
-        header("Location: $local_base_path/");
+        header("Location: BASE_PATH/");
         exit();
     }
 

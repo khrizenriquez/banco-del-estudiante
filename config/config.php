@@ -1,7 +1,6 @@
 <?php
-$environment = getenv('APP_ENV') ?: 'production';
-$route_prefix = '/desarrolloweb/banco-del-estudiante';
-
-if ($environment === 'production') {
-    $route_prefix = '';
+if ($_SERVER['SERVER_NAME'] === 'localhost' || $_SERVER['SERVER_NAME'] === '127.0.0.1') {
+    define('BASE_PATH', '/desarrolloweb/banco-del-estudiante');
+} else {
+    define('BASE_PATH', '');
 }

@@ -72,7 +72,7 @@ require_once './views/common/logged-menu.php';
                 <td>2023-08-15</td>
                 <td>Cajero Creador</td>
                 <td>
-                    <a href="<?= $local_base_path; ?>/teller/usuarios/<?= '111'; ?>" class="button is-small is-warning">Editar</a>
+                    <a href="<?= BASE_PATH; ?>/teller/usuarios/<?= '111'; ?>" class="button is-small is-warning">Editar</a>
                 </td>
             </tr>
 
@@ -85,7 +85,7 @@ require_once './views/common/logged-menu.php';
                 <td>2023-07-05</td>
                 <td>Cajero Creador</td>
                 <td>
-                    <a href="<?= $local_base_path; ?>/teller/usuarios/<?= '122'; ?>" class="button is-small is-warning">Editar</a>
+                    <a href="<?= BASE_PATH; ?>/teller/usuarios/<?= '122'; ?>" class="button is-small is-warning">Editar</a>
                 </td>
             </tr>
 
@@ -98,7 +98,7 @@ require_once './views/common/logged-menu.php';
                 <td>2023-09-01</td>
                 <td>Cajero Creador</td>
                 <td>
-                    <a href="<?= $local_base_path; ?>/teller/usuarios/<?= '123'; ?>" class="button is-small is-warning">Editar</a>
+                    <a href="<?= BASE_PATH; ?>/teller/usuarios/<?= '123'; ?>" class="button is-small is-warning">Editar</a>
                 </td>
             </tr>
             </tbody>

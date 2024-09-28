@@ -42,44 +42,4 @@ foreach ($routes as $route => $controllerAction) {
 // Default to register if no action matches
 $authController = new AuthController();
 $authController->showLoginForm();
-
-//switch ($action) {
-//    case 'login':
-//        $authController = new AuthController();
-//        $authController->showLoginForm();
-//        break;
-//    case 'register':
-//        $authController = new AuthController();
-//        $authController->showRegisterForm();
-//        break;
-//    case 'forgot-password':
-//        $authController = new AuthController();
-//        $authController->showForgotPasswordForm();
-//        break;
-//    case 'logout':
-//        $authController = new AuthController();
-//        $authController->logout();
-//        break;
-//    // Admin actions
-//    case 'admin/dashboard':
-//        $adminController = new AdminController();
-//        $adminController->dashboard();
-//        break;
-//    // Teller actions
-//    case 'teller-dashboard':
-//        $tellerController = new TellerController();
-//        $tellerController->dashboard();
-//        break;
-//    // User actions
-//    case 'user-dashboard':
-//        $userController = new UserController();
-//        $userController->dashboard();
-//        break;
-//    default:
-//        // Default to register if no action matches
-//        //$authController = new AuthController();
-//        //$authController->showLoginForm();
-//        include 'views/auth/info.php';
-//        break;
-//}
 ?>

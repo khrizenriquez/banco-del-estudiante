@@ -26,8 +26,8 @@ require_once './views/common/header.php';
                     </div>
                 </div>
             </form>
-            <a href="<?= $local_base_path; ?>/forgot-password">¿Olvidaste tú contraseña?</a>
-            <a href="<?= $local_base_path; ?>/register">Crear cuenta</a>
+            <a href="<?= BASE_PATH; ?>/forgot-password">¿Olvidaste tú contraseña?</a>
+            <a href="<?= BASE_PATH; ?>/register">Crear cuenta</a>
         </div>
     </div>
 </section>

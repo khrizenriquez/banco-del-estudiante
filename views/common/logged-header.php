@@ -1,5 +1,5 @@
 <?php
-$local_base_path = '/desarrolloweb/banco-del-estudiante';
+require_once 'config/config.php';
 ?>
 
 <!DOCTYPE html>
@@ -10,9 +10,9 @@ $local_base_path = '/desarrolloweb/banco-del-estudiante';
 
     <title><?= isset($page_title) ? $page_title : 'Banco del estudiante'; ?></title>
 
-    <link rel="icon" type="image/x-icon" href="<?= $local_base_path; ?>/assets/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="<?= BASE_PATH; ?>/assets/images/favicon.ico">
 
-    <link rel="stylesheet" href="<?= $local_base_path; ?>/assets/css/vendor/bulma/bulma.min.css">
-    <link rel="stylesheet" href="<?= $local_base_path; ?>/assets/css/general.css">
-    <link rel="stylesheet" href="<?= $local_base_path; ?>/assets/css/styles.css">
+    <link rel="stylesheet" href="<?= BASE_PATH; ?>/assets/css/vendor/bulma/bulma.min.css">
+    <link rel="stylesheet" href="<?= BASE_PATH; ?>/assets/css/general.css">
+    <link rel="stylesheet" href="<?= BASE_PATH; ?>/assets/css/styles.css">
 </head>

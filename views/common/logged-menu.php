@@ -1,9 +1,9 @@
 <?php
+require_once 'config/config.php';
 $routes = require 'config/routes.php';
 
 $user_name = 'John Doe';
 $user_role = 'admin';
-$local_base_path = '/desarrolloweb/banco-del-estudiante';
 
 $menu_options = ['<i class="fa-solid fa-arrow-right-from-bracket"></i>' => '/logout'];
 // Check the routes.php file to know the exact route for each role
@@ -48,7 +48,7 @@ $last_menu_label = key($menu_options);
     <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
             <?php foreach ($menu_without_last as $option => $link): ?>
-                <a class="navbar-item" href="<?= $local_base_path.$link; ?>">
+                <a class="navbar-item" href="<?= BASE_PATH.$link; ?>">
                     <?= htmlspecialchars($option); ?>
                 </a>
             <?php endforeach; ?>
@@ -57,7 +57,7 @@ $last_menu_label = key($menu_options);
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
-                    <a class="button is-danger" href="<?= $local_base_path.$last_menu_item; ?>">
+                    <a class="button is-danger" href="<?= BASE_PATH.$last_menu_item; ?>">
                         <strong><?= $last_menu_label; ?></strong>
                     </a>
                 </div>
