@@ -12,12 +12,12 @@ require_once './views/common/header.php';
             <form action="/login" method="POST">
                 <div class="field">
                     <div class="control">
-                        <input class="input" type="text" placeholder="Email or phone" name="email" required>
+                        <input class="input" type="text" placeholder="Correo" name="email" required>
                     </div>
                 </div>
                 <div class="field">
                     <div class="control">
-                        <input class="input" type="password" placeholder="Password" name="password" required>
+                        <input class="input" type="password" placeholder="Clave" name="password" required>
                     </div>
                 </div>
                 <div class="field">

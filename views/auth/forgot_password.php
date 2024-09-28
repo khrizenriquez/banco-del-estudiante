@@ -11,7 +11,7 @@ require_once './views/common/header.php';
             <form action="/forgot-password" method="POST">
                 <div class="field">
                     <div class="control">
-                        <input class="input" type="email" placeholder="Email" name="email" required>
+                        <input class="input" type="email" placeholder="Correo" name="email" required>
                     </div>
                 </div>
                 <div class="field">
