@@ -1,5 +1,5 @@
 <?php
-require_once 'config/database.php'; // Incluir la conexión
+require_once 'config/database.php';
 
 class LoginController {
     public function authenticate($username, $password) {

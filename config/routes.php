@@ -8,12 +8,16 @@ return [
     'logout' => 'AuthController@logout',
     'server-info' => 'AuthController@showServerInfo',
 
-    // Admin routes
+    // Admin routes - Pages
     'admin/dashboard' => 'AdminController@dashboard',
     'admin/monitor' => 'AdminController@dashboard',
     'admin/usuarios' => 'AdminController@createUser',
     'admin/usuarios/{id}' => 'AdminController@editUser',
-    'admin/usuarios/{id}/bloquear' => 'AdminController@blockUser',
+
+    // Admin routes - Services
+    'admin/create-user' => 'AdminController@createTeller',
+    'admin/update-user' => 'AdminController@updateUser',
+    'admin/usuarios/{id}/toggle-status' => 'AdminController@toggleUserStatus',
 
     // Teller routes
     'teller/dashboard' => 'TellerController@dashboard',

@@ -1,10 +1,11 @@
 <?php
 require_once 'LoginController.php';
+require_once 'config/config.php';
+
 class AuthController {
     public function login() {
-        var_dump($_POST);
-        var_dump($_GET);
-        var_dump("session id ". session_id());
+        session_start();
+
         $username = $_POST['email'];
         $password = $_POST['password'];
 
@@ -12,36 +13,44 @@ class AuthController {
         $user = $loginController->authenticate($username, $password);
 
         if ($user) {
-            session_start();
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
 
-            switch ($user['role']) {
-                case 'admin':
-                    //header('Location: index.php?action=admin_dashboard');
-                    break;
-                case 'teller':
-                    header('Location: index.php?action=teller_dashboard');
-                    break;
-                case 'customer':
-                    header('Location: index.php?action=user_dashboard');
-                    break;
-                default:
-                    session_destroy();
-                    header('Location: index.php?error=invalid_role');
-                    break;
-            }
-            exit();
+            $this->redirectToDashboard($user['role']);
         } else {
-            header('Location: index.php?action=login&error=invalid_credentials');
+            header('Location: ' . BASE_PATH . '/login?error=invalid_credentials');
             exit();
         }
     }
 
     public function showLoginForm() {
-        include 'views/auth/login.php';
+        session_start();
+
+        if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
+            $this->redirectToDashboard($_SESSION['role']);
+        } else {
+            include 'views/auth/login.php';
+        }
     }
 
+    private function redirectToDashboard($role) {
+        switch ($role) {
+            case 'admin':
+                header('Location: ' . BASE_PATH . '/admin/dashboard');
+                break;
+            case 'teller':
+                header('Location: ' . BASE_PATH . '/teller/dashboard');
+                break;
+            case 'customer':
+                header('Location: ' . BASE_PATH . '/user/dashboard');
+                break;
+            default:
+                session_destroy();
+                header('Location: ' . BASE_PATH . '/login?error=invalid_role');
+                break;
+        }
+        exit();
+    }
     public function showRegisterForm() {
         include 'views/auth/register_user.php';
     }
@@ -55,11 +64,10 @@ class AuthController {
     }
 
     public function logout() {
-        //session_start();
+        session_start();
         session_destroy();
-        header("Location: BASE_PATH/");
+        header('Location: ' . BASE_PATH . '/');
         exit();
     }
-
 }
 ?>

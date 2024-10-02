@@ -1,11 +1,11 @@
 <?php
+require_once 'session_check.php';
 class TellerController {
     public function __construct() {
-        session_start();
-        /*if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'teller') {
-            header('Location: index.php?action=login&error=unauthorized');
+        if ($_SESSION['role'] !== 'teller') {
+            header('Location: ' . BASE_PATH . '/login?error=unauthorized');
             exit();
-        }*/
+        }
     }
 
     public function dashboard() {

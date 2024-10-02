@@ -10,7 +10,7 @@ require_once './views/common/logged-menu.php';
 ?>
 
 <section class="container is-max-tablet mt-6">
-    <form action="/teller/usuarios/<?= htmlspecialchars($user->user_id); ?>/bloquear" method="POST">
+    <form action="/teller/usuarios/<?= htmlspecialchars($user->user_id); ?>/block" method="POST">
         <input type="hidden" name="user_id" value="<?= htmlspecialchars($user->user_id); ?>">
 
         <div class="field">

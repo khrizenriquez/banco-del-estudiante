@@ -1,12 +1,11 @@
 <?php
-
+require_once 'session_check.php';
 class UserController {
     public function __construct() {
-//        session_start();
-//        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
-//            header('Location: index.php?action=login&error=unauthorized');
-//            exit();
-//        }
+        if ($_SESSION['role'] !== 'customer') {
+            header('Location: ' . BASE_PATH . '/login?error=unauthorized');
+            exit();
+        }
     }
 
     public function dashboard() {
