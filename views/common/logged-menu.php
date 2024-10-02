@@ -2,8 +2,8 @@
 require_once 'config/config.php';
 $routes = require 'config/routes.php';
 
-$user_name = 'John Doe';
-$user_role = 'admin';
+$user_formatted = $_SESSION['first_name'].' ('.$_SESSION['username'].')';
+$user_role = $_SESSION['role'];
 
 $menu_options = ['<i class="fa-solid fa-arrow-right-from-bracket"></i>' => '/logout'];
 // Check the routes.php file to know the exact route for each role
@@ -34,7 +34,7 @@ $menu_without_last = array_slice($menu_options, 0, -1);
 $last_menu_item = end($menu_options);
 $last_menu_label = key($menu_options);
 ?>
-<p class="text-center has-background-link-15 has-text-primary-15-invert">🏦 Bienvenido, <?= htmlspecialchars($user_name); ?>!</p>
+<p class="text-center has-background-link-15 has-text-primary-15-invert">🏦 Bienvenido, <?= htmlspecialchars($user_formatted); ?>!</p>
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">

@@ -9,6 +9,8 @@ class TellerController {
     }
 
     public function dashboard() {
+        $userModel = new UserModel();
+        $users = $userModel->getUsersByRole('customer');
         include 'views/teller/dashboard.php';
     }
 

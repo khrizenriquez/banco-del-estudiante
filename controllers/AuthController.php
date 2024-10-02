@@ -4,7 +4,7 @@ require_once 'config/config.php';
 
 class AuthController {
     public function login() {
-        session_start();
+        @session_start();
 
         $username = $_POST['email'];
         $password = $_POST['password'];
@@ -13,8 +13,11 @@ class AuthController {
         $user = $loginController->authenticate($username, $password);
 
         if ($user) {
+            //  Setting up the default values after the login
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['first_name'] = $user['first_name'];
 
             $this->redirectToDashboard($user['role']);
         } else {
@@ -24,7 +27,7 @@ class AuthController {
     }
 
     public function showLoginForm() {
-        session_start();
+        @session_start();
 
         if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
             $this->redirectToDashboard($_SESSION['role']);
@@ -52,11 +55,23 @@ class AuthController {
         exit();
     }
     public function showRegisterForm() {
-        include 'views/auth/register_user.php';
+        @session_start();
+
+        if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
+            $this->redirectToDashboard($_SESSION['role']);
+        } else {
+            include 'views/auth/register_user.php';
+        }
     }
 
     public function showForgotPasswordForm() {
-        include 'views/auth/forgot_password.php';
+        @session_start();
+
+        if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
+            $this->redirectToDashboard($_SESSION['role']);
+        } else {
+            include 'views/auth/forgot_password.php';
+        }
     }
 
     public function showServerInfo() {
@@ -64,9 +79,8 @@ class AuthController {
     }
 
     public function logout() {
-        session_start();
         session_destroy();
-        header('Location: ' . BASE_PATH . '/');
+        header('Location: ' . BASE_PATH . '/login');
         exit();
     }
 }

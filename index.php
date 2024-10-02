@@ -22,9 +22,6 @@ $path = trim(str_replace(BASE_PATH, '', $request_uri[0]), '/');
 // Default to home if no path is provided
 $action = $path ?: 'home';
 
-var_dump($path);
-var_dump($_SERVER['REQUEST_METHOD']);
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($path === 'login' || $path === 'index.php')) {
     $authController = new AuthController();
     $authController->login();
