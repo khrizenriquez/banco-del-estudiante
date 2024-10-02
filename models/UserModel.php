@@ -74,6 +74,22 @@ class UserModel {
         return $stmt->execute();
     }
 
+    public function getCustomerById($user_id) {
+        $stmt = $this->db->prepare("
+        SELECT u.user_id, u.first_name, u.last_name, u.username, u.email, u.dpi, u.created_at, u.status, 
+               ba.account_number, ba.balance
+        FROM users u
+        LEFT JOIN user_accounts ua ON u.user_id = ua.user_id
+        LEFT JOIN bank_accounts ba ON ua.account_id = ba.account_id
+        WHERE u.user_id = ? AND u.user_type = 'customer'
+    ");
+
+        $stmt->bind_param('i', $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_object();
+    }
+
     public function getUserById($user_id) {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE user_id = ?");
         $stmt->bind_param('i', $user_id);

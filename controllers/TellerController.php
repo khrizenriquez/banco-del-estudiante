@@ -28,7 +28,7 @@ class TellerController {
 
     public function showEditUser($user_id) {
         $userModel = new UserModel();
-        $user = $userModel->getUserById($user_id);
+        $user = $userModel->getCustomerById($user_id);
 
         if (!$user) {
             header('Location: ' . BASE_PATH . '/teller/dashboard?error=user_not_found');
