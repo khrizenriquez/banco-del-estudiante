@@ -76,7 +76,7 @@ class UserModel {
 
     public function getCustomerById($user_id) {
         $stmt = $this->db->prepare("
-        SELECT u.user_id, u.first_name, u.last_name, u.username, u.email, u.dpi, u.created_at, u.status, 
+        SELECT u.user_id, u.first_name, u.last_name, u.username, u.email, u.dpi, u.created_at, u.status, u.user_type, 
                ba.account_number, ba.balance
         FROM users u
         LEFT JOIN user_accounts ua ON u.user_id = ua.user_id
@@ -89,6 +89,7 @@ class UserModel {
         $result = $stmt->get_result();
         return $result->fetch_object();
     }
+
 
     public function getUserById($user_id) {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE user_id = ?");
