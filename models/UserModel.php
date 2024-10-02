@@ -61,6 +61,19 @@ class UserModel {
         return $stmt->execute();
     }
 
+    public function updateUserTeller($user_id, $dpi, $new_password = null) {
+        if ($new_password) {
+            $hashed_password = hash('sha256', $new_password);
+            $stmt = $this->db->prepare("UPDATE users SET dpi = ?, password = ? WHERE user_id = ?");
+            $stmt->bind_param('ssi', $dpi, $hashed_password, $user_id);
+        } else {
+            $stmt = $this->db->prepare("UPDATE users SET dpi = ? WHERE user_id = ?");
+            $stmt->bind_param('si', $dpi, $user_id);
+        }
+
+        return $stmt->execute();
+    }
+
     public function getUserById($user_id) {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE user_id = ?");
         $stmt->bind_param('i', $user_id);
@@ -74,5 +87,62 @@ class UserModel {
         $stmt->bind_param('i', $user_id);
         return $stmt->execute();
     }
+
+    public function createCustomer($account_name, $account_number, $email, $dpi, $created_by, $initial_balance = 0) {
+        $name_parts = explode(' ', $account_name, 2);
+        $first_name = $name_parts[0];
+        $last_name = isset($name_parts[1]) ? $name_parts[1] : '';
+
+        $stmt = $this->db->prepare("SELECT user_id FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 1) {
+            $user = $result->fetch_assoc();
+            $user_id = $user['user_id'];
+        } else {
+            $stmt = $this->db->prepare("CALL create_user(?, ?, ?, ?, NULL, 'customer', 'active', NOW(), ?)");
+            $stmt->bind_param("ssssi", $first_name, $last_name, $email, $email, $created_by);
+            $stmt->execute();
+            $user_id = $this->db->insert_id;
+        }
+
+        if (!$user_id) {
+            return false;
+        }
+
+        $stmt = $this->db->prepare("
+        INSERT INTO bank_accounts (account_number, account_name, balance, created_at)
+        VALUES (?, ?, ?, NOW())
+    ");
+        $stmt->bind_param("ssd", $account_number, $account_name, $initial_balance);
+        $stmt->execute();
+
+        $account_id = $this->db->insert_id;
+
+        if (!$account_id) {
+            return false;
+        }
+
+        $stmt = $this->db->prepare("
+        INSERT INTO user_accounts (user_id, account_id) VALUES (?, ?)
+    ");
+        $stmt->bind_param("ii", $user_id, $account_id);
+
+        return $stmt->execute();
+    }
+
+    public function updateUserDetails($user_id, $dpi, $new_password = null) {
+        if ($new_password) {
+            $hashed_password = hash('sha256', $new_password);
+            $stmt = $this->db->prepare("UPDATE users SET dpi = ?, password = ? WHERE user_id = ?");
+            $stmt->bind_param('ssi', $dpi, $hashed_password, $user_id);
+        } else {
+            $stmt = $this->db->prepare("UPDATE users SET dpi = ? WHERE user_id = ?");
+            $stmt->bind_param('si', $dpi, $user_id);
+        }
+
+        return $stmt->execute();
+    }
 }
-?>

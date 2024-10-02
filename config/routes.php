@@ -9,22 +9,26 @@ return [
     'server-info' => 'AuthController@showServerInfo',
 
     // Admin routes - Pages
-    'admin/dashboard' => 'AdminController@dashboard',
-    'admin/monitor' => 'AdminController@dashboard',
-    'admin/usuarios' => 'AdminController@createUser',
-    'admin/usuarios/{id}' => 'AdminController@editUser',
+    'admin/dashboard' => 'AdminController@showDashboard',
+    'admin/monitor' => 'AdminController@showMonitor',
+    'admin/usuarios' => 'AdminController@showCreateUser',
+    'admin/usuarios/{id}' => 'AdminController@showEditUser',
 
     // Admin routes - Services
     'admin/create-user' => 'AdminController@createTeller',
     'admin/update-user' => 'AdminController@updateUser',
     'admin/usuarios/{id}/toggle-status' => 'AdminController@toggleUserStatus',
 
-    // Teller routes
-    'teller/dashboard' => 'TellerController@dashboard',
-    'teller/usuarios' => 'TellerController@createAccount',
-    'teller/usuarios/{id}' => 'TellerController@editUser',
-    'teller/depositos' => 'TellerController@deposit',
-    'teller/retiros' => 'TellerController@withdraw',
+    // Teller routes - Pages
+    'teller/dashboard' => 'TellerController@showDashboard',
+    'teller/usuarios' => 'TellerController@showCreateAccount',
+    'teller/usuarios/{id}' => 'TellerController@showEditUser',
+    'teller/depositos' => 'TellerController@showDeposit',
+    'teller/retiros' => 'TellerController@showWithdraw',
+
+    // Teller routes - Services
+    'teller/create-user' => 'TellerController@storeAccount',
+    'teller/update-user' => 'TellerController@updateUser',
 
     // User routes
     'user/transferencia-a-terceros' => 'UserController@viewTransfer',

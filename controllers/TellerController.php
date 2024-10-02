@@ -8,45 +8,64 @@ class TellerController {
         }
     }
 
-    public function dashboard() {
+    public function showDashboard() {
         $userModel = new UserModel();
         $users = $userModel->getUsersByRole('customer');
         include 'views/teller/dashboard.php';
     }
 
-    public function createAccount() {
+    public function showCreateAccount() {
         include 'views/teller/create_account.php';
     }
 
-    public function deposit() {
+    public function showDeposit() {
         include 'views/teller/deposit.php';
     }
 
-    public function withdraw() {
+    public function showWithdraw() {
         include 'views/teller/withdraw.php';
     }
 
-    public function editUser($id) {
-        //$user = $this->getUserById($id);
-        $user = $this->getDummyUser($id);
+    public function showEditUser($user_id) {
+        $userModel = new UserModel();
+        $user = $userModel->getUserById($user_id);
 
-        if ($user) {
-            include 'views/teller/edit_account.php';
-        } else {
-            echo "Usuario no encontrado.";
+        if (!$user) {
+            header('Location: ' . BASE_PATH . '/teller/dashboard?error=user_not_found');
+            exit();
         }
+
+        if ($user->user_type === 'admin') {
+            header('Location: ' . BASE_PATH . '/teller/dashboard?error=edit_admin_not_allowed');
+            exit();
+        }
+
+        include 'views/teller/edit_account.php';
     }
 
-    public function blockUser($id) {
-        $user = $this->getDummyUser($id);
+    public function updateUser() {
+        $user_id = $_POST['user_id'];
+        $dpi = $_POST['dpi'];
+        $new_password = $_POST['new_password'];
+        $confirm_new_password = $_POST['confirm_new_password'];
 
-        if ($user) {
-            //$this->updateUserStatus($id, 'blocked');
-            echo "El usuario ha sido bloqueado correctamente.";
-        } else {
-            echo "Usuario no encontrado.";
+        if (!empty($new_password) && $new_password !== $confirm_new_password) {
+            header('Location: ' . BASE_PATH . '/teller/usuarios/' . $user_id . '?error=password_mismatch');
+            exit();
         }
+
+        $userModel = new UserModel();
+
+        $resultUser = $userModel->updateUserDetails($user_id, $dpi, $new_password);
+
+        if ($resultUser) {
+            header('Location: ' . BASE_PATH . '/teller/dashboard?success=user_updated');
+        } else {
+            header('Location: ' . BASE_PATH . '/teller/usuarios/' . $user_id . '?error=update_failed');
+        }
+        exit();
     }
+
 
     private function getDummyUser($id) {
         return (object) [
@@ -74,5 +93,31 @@ class TellerController {
 
         return $stmt->fetch();
     }
+
+    public function storeAccount() {
+        $account_name = $_POST['account_name'];
+        $account_number = $_POST['account_number'];
+        $email = $_POST['email'];
+        $dpi = $_POST['dpi'];
+        $initial_balance = $_POST['initial_balance'];
+        $created_by = $_SESSION['user_id'];
+
+        // Validar campos vacíos
+        if (empty($account_name) || empty($account_number) || empty($email) || empty($dpi) || empty($initial_balance)) {
+            header('Location: ' . BASE_PATH . '/teller/create-account?error=missing_fields');
+            exit();
+        }
+
+        $userModel = new UserModel();
+        $result = $userModel->createCustomer($account_name, $account_number, $email, $dpi, $created_by, $initial_balance);
+
+        if ($result) {
+            header('Location: ' . BASE_PATH . '/teller/dashboard?success=account_created');
+        } else {
+            header('Location: ' . BASE_PATH . '/teller/create-account?error=create_failed');
+        }
+        exit();
+    }
+
 }
 ?>

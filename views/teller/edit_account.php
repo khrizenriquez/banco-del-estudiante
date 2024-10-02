@@ -10,13 +10,13 @@ require_once './views/common/logged-menu.php';
 ?>
 
 <section class="container is-max-tablet mt-6">
-    <form action="/teller/edit-user" method="POST">
-        <input type="hidden" name="user_id" value="<?= htmlspecialchars(@$user->user_id); ?>">
+    <form action="<?= BASE_PATH; ?>/teller/update-user" method="POST">
+        <input type="hidden" name="user_id" value="<?= htmlspecialchars($user->user_id ?? '', ENT_QUOTES, 'UTF-8'); ?>">
 
         <div class="field">
             <label class="label has-text-primary-00">Nombre (No Editable)</label>
             <div class="control has-icons-left">
-                <input class="input" type="text" name="account_name" value="<?= htmlspecialchars(@$user->first_name.' '.@$user->last_name); ?>" disabled>
+                <input class="input" type="text" name="account_name" value="<?= htmlspecialchars($user->first_name ?? '' . ' ' . $user->last_name ?? '', ENT_QUOTES, 'UTF-8'); ?>" disabled>
                 <span class="icon is-small is-left">
                     <i class="fa-solid fa-user"></i>
                 </span>
@@ -26,7 +26,7 @@ require_once './views/common/logged-menu.php';
         <div class="field">
             <label class="label has-text-primary-00">Número de Cuenta Bancaria (No Editable)</label>
             <div class="control has-icons-left">
-                <input class="input" type="text" name="account_number" value="<?= htmlspecialchars(@$user->account_number); ?>" disabled>
+                <input class="input" type="text" name="account_number" value="<?= htmlspecialchars($user->account_number ?? '', ENT_QUOTES, 'UTF-8'); ?>" disabled>
                 <span class="icon is-small is-left">
                     <i class="fas fa-id-card"></i>
                 </span>
@@ -36,7 +36,7 @@ require_once './views/common/logged-menu.php';
         <div class="field">
             <label class="label has-text-primary-00">Correo Electrónico (No Editable)</label>
             <div class="control has-icons-left">
-                <input class="input" type="email" name="email" value="<?= htmlspecialchars(@$user->username); ?>" disabled>
+                <input class="input" type="email" name="email" value="<?= htmlspecialchars($user->username ?? '', ENT_QUOTES, 'UTF-8'); ?>" disabled>
                 <span class="icon is-small is-left">
                     <i class="fas fa-envelope"></i>
                 </span>
@@ -46,7 +46,7 @@ require_once './views/common/logged-menu.php';
         <div class="field">
             <label class="label has-text-primary-00">DPI</label>
             <div class="control has-icons-left">
-                <input class="input" type="text" name="dpi" value="1234567890123" required>
+                <input class="input" type="text" name="dpi" value="<?= htmlspecialchars($user->dpi ?? '', ENT_QUOTES, 'UTF-8'); ?>" required>
                 <span class="icon is-small is-left">
                     <i class="fas fa-id-badge"></i>
                 </span>

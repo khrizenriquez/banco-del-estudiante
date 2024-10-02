@@ -10,13 +10,19 @@ class AdminController {
         }
     }
 
-    public function dashboard() {
+    public function showDashboard() {
         $userModel = new UserModel();
         $users = $userModel->getAllUsers();
         include 'views/admin/dashboard.php';
     }
 
-    public function createUser() {
+    public function showMonitor() {
+        $userModel = new UserModel();
+        $users = $userModel->getAllUsers();
+        include 'views/admin/dashboard.php';
+    }
+
+    public function showCreateUser() {
         include 'views/admin/create_users.php';
     }
 
@@ -32,7 +38,7 @@ class AdminController {
         include 'views/admin/view_users.php';
     }
 
-    public function editUser($user_id) {
+    public function showEditUser($user_id) {
         $userModel = new UserModel();
         $user = $userModel->getUserById($user_id);
 
