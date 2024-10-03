@@ -1,3 +1,7 @@
 .container.is-fluid .table-container table {
     margin: 0 auto;
 }
+.account-info {
+    color: black;
+    font-weight: bold;
+}

@@ -14,12 +14,11 @@ require_once './views/common/logged-menu.php';
         <table class="table is-striped is-hoverable is-fullwidth">
             <thead>
             <tr>
-                <th>ID de Usuario</th>
                 <th>Nombre Completo</th>
-                <th>Tipo de Usuario</th>
                 <th>Estado</th>
                 <th>Fecha de Creación</th>
                 <th>Creado por</th>
+                <th>Cuentas Bancarias y Saldos</th>
                 <th>Acciones</th>
             </tr>
             </thead>
@@ -27,12 +26,24 @@ require_once './views/common/logged-menu.php';
             <?php if (!empty($users)): ?>
                 <?php foreach ($users as $user): ?>
                     <tr>
-                        <td><?= htmlspecialchars($user['user_id']); ?></td>
                         <td><?= htmlspecialchars($user['full_name']); ?></td>
-                        <td><?= htmlspecialchars(ucfirst($user['user_type'])); ?></td>
                         <td><?= htmlspecialchars(ucfirst($user['status'])); ?></td>
                         <td><?= htmlspecialchars($user['created_at']); ?></td>
                         <td><?= htmlspecialchars($user['created_by']) ?: 'N/A'; ?></td>
+                        <td>
+                            <?php if (!empty($user['accounts'])): ?>
+                                <ul>
+                                    <?php foreach ($user['accounts'] as $account): ?>
+                                        <li>
+                                            <strong class="account-info">No. Cuenta:</strong> <?= htmlspecialchars($account['account_number']); ?>
+                                            - <strong class="account-info">Saldo:</strong> Q<?= htmlspecialchars(number_format($account['balance'], 2)); ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php else: ?>
+                                No tiene cuentas bancarias.
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <a href="<?= BASE_PATH; ?>/teller/usuarios/<?= htmlspecialchars($user['user_id']); ?>" class="button is-small is-warning">Editar</a>
                         </td>

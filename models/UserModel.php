@@ -30,18 +30,33 @@ class UserModel {
 
     public function getUsersByRole($role) {
         $stmt = $this->db->prepare("
-            SELECT u.user_id, CONCAT(u.first_name, ' ', u.last_name) AS full_name, u.user_type, u.status, u.created_at, 
-                   CONCAT(c.first_name, ' ', c.last_name) AS created_by
-            FROM users u
-            LEFT JOIN users c ON u.created_by = c.user_id
-            WHERE u.user_type = ?");
-
+        SELECT u.user_id, CONCAT(u.first_name, ' ', u.last_name) AS full_name, u.user_type, u.status, u.created_at, 
+               CONCAT(c.first_name, ' ', c.last_name) AS created_by
+        FROM users u
+        LEFT JOIN users c ON u.created_by = c.user_id
+        WHERE u.user_type = ?
+    ");
         $stmt->bind_param('s', $role);
         $stmt->execute();
         $result = $stmt->get_result();
         $users = $result->fetch_all(MYSQLI_ASSOC);
+
+        foreach ($users as &$user) {
+            $stmt = $this->db->prepare("
+            SELECT ba.account_number, ba.balance
+            FROM bank_accounts ba
+            INNER JOIN user_accounts ua ON ba.account_id = ua.account_id
+            WHERE ua.user_id = ?
+        ");
+            $stmt->bind_param('i', $user['user_id']);
+            $stmt->execute();
+            $accountsResult = $stmt->get_result();
+            $user['accounts'] = $accountsResult->fetch_all(MYSQLI_ASSOC);
+        }
+
         return $users;
     }
+
 
     public function updateUserStatus($user_id, $status) {
         $stmt = $this->db->prepare("UPDATE users SET status = ? WHERE user_id = ?");
@@ -172,10 +187,6 @@ class UserModel {
         }
     }
 
-
-
-
-
     public function updateUserDetails($user_id, $dpi, $new_password = null) {
         if ($new_password) {
             $hashed_password = hash('sha256', $new_password);
@@ -185,6 +196,48 @@ class UserModel {
             $stmt = $this->db->prepare("UPDATE users SET dpi = ? WHERE user_id = ?");
             $stmt->bind_param('si', $dpi, $user_id);
         }
+
+        return $stmt->execute();
+    }
+
+    public function getBankAccountByNumber($account_number) {
+        $stmt = $this->db->prepare("SELECT * FROM bank_accounts WHERE account_number = ?");
+        $stmt->bind_param('s', $account_number);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_object();
+    }
+
+    public function depositToAccount($account_number, $amount) {
+        $account = $this->getBankAccountByNumber($account_number);
+
+        if (!$account) {
+            throw new Exception('Cuenta no encontrada');
+        }
+
+        $new_balance = $account->balance + $amount;
+
+        $stmt = $this->db->prepare("UPDATE bank_accounts SET balance = ? WHERE account_number = ?");
+        $stmt->bind_param('ds', $new_balance, $account_number);
+
+        return $stmt->execute();
+    }
+
+    public function withdrawFromAccount($account_number, $amount) {
+        $account = $this->getBankAccountByNumber($account_number);
+
+        if (!$account) {
+            throw new Exception('Cuenta no encontrada');
+        }
+
+        if ($account->balance < $amount) {
+            throw new Exception('Saldo insuficiente');
+        }
+
+        $new_balance = $account->balance - $amount;
+
+        $stmt = $this->db->prepare("UPDATE bank_accounts SET balance = ? WHERE account_number = ?");
+        $stmt->bind_param('ds', $new_balance, $account_number);
 
         return $stmt->execute();
     }

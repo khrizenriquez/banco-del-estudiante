@@ -9,10 +9,18 @@ require_once './views/common/logged-header.php';
 require_once './views/common/logged-menu.php';
 ?>
 
-
+<?php if (isset($_GET['error'])): ?>
+    <div class="notification is-danger">
+        <?= htmlspecialchars($_GET['error']); ?>
+    </div>
+<?php elseif (isset($_GET['success'])): ?>
+    <div class="notification is-success">
+        Retiro realizado con éxito.
+    </div>
+<?php endif; ?>
 
 <section class="container is-max-tablet mt-6">
-    <form action="/teller/retiro" method="POST">
+    <form action="<?= BASE_PATH; ?>/teller/retiro" method="POST">
         <div class="field">
             <label class="label  has-text-primary-00"">Número de Cuenta</label>
             <div class="control">

@@ -94,30 +94,6 @@ class TellerController {
         return $stmt->fetch();
     }
 
-//    public function storeAccount() {
-//        $account_name = $_POST['account_name'];
-//        $account_number = $_POST['account_number'];
-//        $email = $_POST['email'];
-//        $dpi = $_POST['dpi'];
-//        $initial_balance = $_POST['initial_balance'];
-//        $created_by = $_SESSION['user_id'];
-//
-//        if (empty($account_name) || empty($account_number) || empty($email) || empty($dpi) || empty($initial_balance)) {
-//            header('Location: ' . BASE_PATH . '/teller/create-account?error=missing_fields');
-//            exit();
-//        }
-//
-//        $userModel = new UserModel();
-//        $result = $userModel->createCustomer($account_name, $account_number, $email, $dpi, $created_by, $initial_balance);
-//
-//        if ($result) {
-//            header('Location: ' . BASE_PATH . '/teller/dashboard?success=account_created');
-//        } else {
-//            header('Location: ' . BASE_PATH . '/teller/create-account?error=create_failed');
-//        }
-//        exit();
-//    }
-
     public function storeAccount() {
         $account_name = $_POST['account_name'];
         $account_number = $_POST['account_number'];
@@ -146,6 +122,58 @@ class TellerController {
             } else {
                 header('Location: ' . BASE_PATH . '/teller/usuarios?error=unexpected_error');
             }
+        }
+
+        exit();
+    }
+
+    public function handleDeposit() {
+        $account_number = $_POST['account_number'];
+        $amount = $_POST['amount'];
+
+        if (empty($account_number) || empty($amount)) {
+            header('Location: ' . BASE_PATH . '/teller/deposit?error=missing_fields');
+            exit();
+        }
+
+        $userModel = new UserModel();
+
+        try {
+            $result = $userModel->depositToAccount($account_number, $amount);
+
+            if ($result) {
+                header('Location: ' . BASE_PATH . '/teller/depositos?success=deposit_successful');
+            } else {
+                header('Location: ' . BASE_PATH . '/teller/depositos?error=deposit_failed');
+            }
+        } catch (Exception $e) {
+            header('Location: ' . BASE_PATH . '/teller/depositos?error=' . urlencode($e->getMessage()));
+        }
+
+        exit();
+    }
+
+    public function handleWithdraw() {
+        $account_number = $_POST['account_number'];
+        $amount = $_POST['amount'];
+
+        if (empty($account_number) || empty($amount)) {
+            header('Location: ' . BASE_PATH . '/teller/withdraw?error=missing_fields');
+            exit();
+        }
+
+        $userModel = new UserModel();
+
+        try {
+            $result = $userModel->withdrawFromAccount($account_number, $amount);
+
+            if ($result) {
+                header('Location: ' . BASE_PATH . '/teller/retiros?success=withdraw_successful');
+            } else {
+                header('Location: ' . BASE_PATH . '/teller/retiros?error=withdraw_failed');
+            }
+        } catch (Exception $e) {
+            header('Location: ' . BASE_PATH . '/teller/retiros?error=' . urlencode($e->getMessage()));
         }
 
         exit();

@@ -29,6 +29,8 @@ return [
     // Teller routes - Services
     'teller/create-user' => 'TellerController@storeAccount',
     'teller/update-user' => 'TellerController@updateUser',
+    'teller/deposito' => 'TellerController@handleDeposit',
+    'teller/retiro' => 'TellerController@handleWithdraw',
 
     // User routes
     'user/transferencia-a-terceros' => 'UserController@viewTransfer',
