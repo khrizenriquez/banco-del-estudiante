@@ -9,6 +9,19 @@ require_once './views/common/logged-header.php';
 require_once './views/common/logged-menu.php';
 ?>
 
+<?php if (isset($_GET['error'])): ?>
+    <div class="notification is-danger">
+        <?php if ($_GET['error'] === 'duplicate_account'): ?>
+            <p>El número de cuenta ya existe. Por favor, elija un número de cuenta diferente.</p>
+        <?php elseif ($_GET['error'] === 'missing_fields'): ?>
+            <p>Por favor, complete todos los campos.</p>
+        <?php else: ?>
+            <p>Ocurrió un error inesperado. Por favor, intente nuevamente.</p>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
+
 <section class="container is-max-tablet mt-6">
     <form action="<?= BASE_PATH; ?>/teller/create-user" method="POST">
         <div class="field">

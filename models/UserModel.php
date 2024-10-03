@@ -90,7 +90,6 @@ class UserModel {
         return $result->fetch_object();
     }
 
-
     public function getUserById($user_id) {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE user_id = ?");
         $stmt->bind_param('i', $user_id);
@@ -106,49 +105,76 @@ class UserModel {
     }
 
     public function createCustomer($account_name, $account_number, $email, $dpi, $created_by, $initial_balance = 0) {
-        $name_parts = explode(' ', $account_name, 2);
-        $first_name = $name_parts[0];
-        $last_name = isset($name_parts[1]) ? $name_parts[1] : '';
+        $this->db->begin_transaction();
 
-        $stmt = $this->db->prepare("SELECT user_id FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        try {
+            $name_parts = explode(' ', $account_name, 2);
+            $first_name = $name_parts[0];
+            $last_name = isset($name_parts[1]) ? $name_parts[1] : '';
 
-        if ($result->num_rows === 1) {
-            $user = $result->fetch_assoc();
-            $user_id = $user['user_id'];
-        } else {
-            $stmt = $this->db->prepare("CALL create_user(?, ?, ?, ?, NULL, 'customer', 'active', NOW(), ?)");
-            $stmt->bind_param("ssssi", $first_name, $last_name, $email, $email, $created_by);
+            $stmt = $this->db->prepare("SELECT user_id FROM users WHERE email = ?");
+            $stmt->bind_param("s", $email);
             $stmt->execute();
-            $user_id = $this->db->insert_id;
-        }
+            $result = $stmt->get_result();
 
-        if (!$user_id) {
+            if ($result->num_rows === 1) {
+                $user = $result->fetch_assoc();
+                $user_id = $user['user_id'];
+            } else {
+                $password = NULL;
+                $username = $email;
+
+                $stmt = $this->db->prepare("CALL create_user(?, ?, ?, ?, ?, 'customer', 'active', NOW(), ?, ?)");
+                $stmt->bind_param("sssssis", $first_name, $last_name, $username, $email, $password, $created_by, $dpi);
+                $stmt->execute();
+
+                $stmt = $this->db->prepare("SELECT user_id FROM users WHERE email = ?");
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if ($result->num_rows === 1) {
+                    $user = $result->fetch_assoc();
+                    $user_id = $user['user_id'];
+                } else {
+                    throw new Exception("Error al crear o recuperar usuario.");
+                }
+            }
+
+            if (!$user_id) {
+                throw new Exception("Error al crear o recuperar usuario.");
+            }
+
+            $stmt = $this->db->prepare("
+            INSERT INTO bank_accounts (account_number, account_name, balance, created_at)
+            VALUES (?, ?, ?, NOW())
+        ");
+            $stmt->bind_param("ssd", $account_number, $account_name, $initial_balance);
+            $stmt->execute();
+
+            $account_id = $this->db->insert_id;
+
+            if (!$account_id) {
+                throw new Exception("Error al crear cuenta bancaria.");
+            }
+
+            $stmt = $this->db->prepare("
+            INSERT INTO user_accounts (user_id, account_id) VALUES (?, ?)
+        ");
+            $stmt->bind_param("ii", $user_id, $account_id);
+            $stmt->execute();
+
+            $this->db->commit();
+            return true;
+
+        } catch (Exception $e) {
+            $this->db->rollback();
             return false;
         }
-
-        $stmt = $this->db->prepare("
-        INSERT INTO bank_accounts (account_number, account_name, balance, created_at)
-        VALUES (?, ?, ?, NOW())
-    ");
-        $stmt->bind_param("ssd", $account_number, $account_name, $initial_balance);
-        $stmt->execute();
-
-        $account_id = $this->db->insert_id;
-
-        if (!$account_id) {
-            return false;
-        }
-
-        $stmt = $this->db->prepare("
-        INSERT INTO user_accounts (user_id, account_id) VALUES (?, ?)
-    ");
-        $stmt->bind_param("ii", $user_id, $account_id);
-
-        return $stmt->execute();
     }
+
+
+
+
 
     public function updateUserDetails($user_id, $dpi, $new_password = null) {
         if ($new_password) {

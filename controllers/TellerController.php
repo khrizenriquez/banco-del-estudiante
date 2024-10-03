@@ -94,6 +94,30 @@ class TellerController {
         return $stmt->fetch();
     }
 
+//    public function storeAccount() {
+//        $account_name = $_POST['account_name'];
+//        $account_number = $_POST['account_number'];
+//        $email = $_POST['email'];
+//        $dpi = $_POST['dpi'];
+//        $initial_balance = $_POST['initial_balance'];
+//        $created_by = $_SESSION['user_id'];
+//
+//        if (empty($account_name) || empty($account_number) || empty($email) || empty($dpi) || empty($initial_balance)) {
+//            header('Location: ' . BASE_PATH . '/teller/create-account?error=missing_fields');
+//            exit();
+//        }
+//
+//        $userModel = new UserModel();
+//        $result = $userModel->createCustomer($account_name, $account_number, $email, $dpi, $created_by, $initial_balance);
+//
+//        if ($result) {
+//            header('Location: ' . BASE_PATH . '/teller/dashboard?success=account_created');
+//        } else {
+//            header('Location: ' . BASE_PATH . '/teller/create-account?error=create_failed');
+//        }
+//        exit();
+//    }
+
     public function storeAccount() {
         $account_name = $_POST['account_name'];
         $account_number = $_POST['account_number'];
@@ -102,20 +126,28 @@ class TellerController {
         $initial_balance = $_POST['initial_balance'];
         $created_by = $_SESSION['user_id'];
 
-        // Validar campos vacíos
         if (empty($account_name) || empty($account_number) || empty($email) || empty($dpi) || empty($initial_balance)) {
             header('Location: ' . BASE_PATH . '/teller/create-account?error=missing_fields');
             exit();
         }
 
-        $userModel = new UserModel();
-        $result = $userModel->createCustomer($account_name, $account_number, $email, $dpi, $created_by, $initial_balance);
+        try {
+            $userModel = new UserModel();
+            $result = $userModel->createCustomer($account_name, $account_number, $email, $dpi, $created_by, $initial_balance);
 
-        if ($result) {
-            header('Location: ' . BASE_PATH . '/teller/dashboard?success=account_created');
-        } else {
-            header('Location: ' . BASE_PATH . '/teller/create-account?error=create_failed');
+            if ($result) {
+                header('Location: ' . BASE_PATH . '/teller/dashboard?success=account_created');
+            } else {
+                header('Location: ' . BASE_PATH . '/teller/usuarios?error=create_failed');
+            }
+        } catch (mysqli_sql_exception $e) {
+            if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
+                header('Location: ' . BASE_PATH . '/teller/usuarios?error=duplicate_account');
+            } else {
+                header('Location: ' . BASE_PATH . '/teller/usuarios?error=unexpected_error');
+            }
         }
+
         exit();
     }
 
