@@ -3,13 +3,17 @@ require_once 'config/config.php';
 
 @session_start();
 
+$public_pages = ['login', 'register', 'forgot-password'];
+
+$current_page = basename($_SERVER['REQUEST_URI']);
+
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
-    if (basename($_SERVER['REQUEST_URI']) !== 'login') {
+    if (!in_array($current_page, $public_pages)) {
         header('Location: ' . BASE_PATH . '/login?error=not_logged_in');
         exit();
     }
 } else {
-    if (basename($_SERVER['REQUEST_URI']) === 'login') {
+    if (in_array($current_page, $public_pages)) {
         switch ($_SESSION['role']) {
             case 'admin':
                 header('Location: ' . BASE_PATH . '/admin/dashboard');
