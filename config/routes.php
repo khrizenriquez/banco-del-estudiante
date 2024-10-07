@@ -7,6 +7,8 @@ return [
     'forgot-password' => 'AuthController@showForgotPasswordForm',
     'logout' => 'AuthController@logout',
     'server-info' => 'AuthController@showServerInfo',
+    'register-customer' => 'AuthController@register',
+    //'login-user' => 'AuthController@login',
 
     // Admin routes - Pages
     'admin/dashboard' => 'AdminController@showDashboard',
@@ -32,9 +34,13 @@ return [
     'teller/deposito' => 'TellerController@handleDeposit',
     'teller/retiro' => 'TellerController@handleWithdraw',
 
-    // User routes
-    'user/transferencia-a-terceros' => 'UserController@viewTransfer',
-    'user/dashboard' => 'UserController@dashboard',
-    'user/agregar-cuentas-de-terceros' => 'UserController@addThirdPartyAccount',
-    'user/estado-de-cuenta' => 'UserController@viewAccountStatement',
+    // Customer routes - Pages
+    'user/transferencia-a-terceros' => 'CustomerController@viewTransfer',
+    'user/dashboard' => 'CustomerController@showManageAccounts',
+    'user/agregar-cuentas-de-terceros' => 'CustomerController@showAddThirdPartyForm',
+    'user/estado-de-cuenta' => 'CustomerController@viewAccountStatement',
+
+    // User routes - Services
+    'user/agregar-terceros' => 'CustomerController@addThirdPartyAccount',
+    'user/transferir-terceros' => 'CustomerController@handleTransfer',
 ];

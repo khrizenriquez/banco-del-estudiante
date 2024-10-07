@@ -1,5 +1,6 @@
 <?php
 require_once 'session_check.php';
+require_once 'models/UserModel.php';
 class TellerController {
     public function __construct() {
         if ($_SESSION['role'] !== 'teller') {

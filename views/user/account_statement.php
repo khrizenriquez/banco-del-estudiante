@@ -1,5 +1,5 @@
 <?php
-$page_title = "Agregar cuentas de terceros :: Banco del estudiante";
+$page_title = "Account Statement :: Bank of the Student";
 require_once './views/common/logged-header.php';
 ?>
 
@@ -16,7 +16,7 @@ require_once './views/common/logged-menu.php';
         <!-- Información adicional del saldo total -->
         <div class="box">
             <h2 class="subtitle">Saldo Total</h2>
-            <p>El saldo total disponible en tus cuentas es: <strong>$3,500.00</strong></p>
+            <p>El saldo total disponible en tus cuentas es: <strong>Q<?= number_format($total_balance, 2); ?></strong></p>
         </div>
 
         <table class="table is-fullwidth">
@@ -29,31 +29,36 @@ require_once './views/common/logged-menu.php';
             </tr>
             </thead>
             <tbody>
-            <!-- Aquí los datos de las transacciones deben generarse dinámicamente -->
-            <tr>
-                <td>2024-09-23</td>
-                <td>Depósito</td>
-                <td>$500.00</td>
-                <td>Cuenta Personal</td>
-            </tr>
-            <tr>
-                <td>2024-09-22</td>
-                <td>Transferencia</td>
-                <td>$200.00</td>
-                <td>Ahorros</td>
-            </tr>
-            <tr>
-                <td>2024-09-21</td>
-                <td>Retiro</td>
-                <td>$50.00</td>
-                <td>Cuenta Personal</td>
-            </tr>
+            <?php foreach ($transactions as $transaction): ?>
+                <tr>
+                    <td><?= htmlspecialchars($transaction['transaction_date']); ?></td>
+                    <td><?= htmlspecialchars($transaction['transaction_type']); ?></td>
+                    <td>Q<?= number_format($transaction['amount'], 2); ?></td>
+                    <td>
+                        De:
+                        <?php
+                        if ($transaction['source_account_type'] == 'third_party') {
+                            echo "Cuenta de Terceros (" . htmlspecialchars($transaction['source_account_number']) . ")";
+                        } else {
+                            echo "Cuenta Bancaria (" . htmlspecialchars($transaction['source_account_number']) . ")";
+                        }
+                        ?>
+                        <br />
+                        a:
+                        <?php
+                        if ($transaction['destination_account_type'] == 'third_party') {
+                            echo "Cuenta de Terceros (" . htmlspecialchars($transaction['destination_account_number']) . ")";
+                        } else {
+                            echo "Cuenta Bancaria (" . htmlspecialchars($transaction['destination_account_number']) . ")";
+                        }
+                        ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
             </tbody>
         </table>
     </div>
 </section>
-
-
 
 <?php
 require_once './views/common/logged-scripts.php';

@@ -20,12 +20,12 @@ if ($user_role === 'admin') {
         'Depositos' => '/teller/depositos',
         'Retiros' => '/teller/retiros',
     ], $menu_options);
-} elseif ($user_role === 'user') {
+} elseif ($user_role === 'customer') {
     $menu_options = array_merge([
         'Gestionar cuentas' => '/user/dashboard',
-        'Estado de cuenta' => '/user/estado-de-cuenta',
         'Agregar cuentas de terceros' => '/user/agregar-cuentas-de-terceros',
         'Transferencia a terceros' => '/user/transferencia-a-terceros',
+        'Estado de cuenta' => '/user/estado-de-cuenta',
     ], $menu_options);
 }
 

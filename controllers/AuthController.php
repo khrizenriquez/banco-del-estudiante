@@ -1,6 +1,7 @@
 <?php
 require_once 'LoginController.php';
 require_once 'config/config.php';
+require_once 'models/CustomerModel.php';
 
 class AuthController {
     public function login() {
@@ -13,11 +14,14 @@ class AuthController {
         $user = $loginController->authenticate($username, $password);
 
         if ($user) {
-            //  Setting up the default values after the login
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['first_name'] = $user['first_name'];
+
+            if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
+                throw new Exception('Error: La sesión no se ha guardado correctamente.');
+            }
 
             $this->redirectToDashboard($user['role']);
         } else {
@@ -50,6 +54,7 @@ class AuthController {
             default:
                 session_destroy();
                 header('Location: ' . BASE_PATH . '/login?error=invalid_role');
+                //include 'views/auth/register_user.php';
                 break;
         }
         exit();
@@ -82,6 +87,33 @@ class AuthController {
         session_destroy();
         header('Location: ' . BASE_PATH . '/login');
         exit();
+    }
+
+    public function register() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $account_number = $_POST['account_number'];
+            $email = $_POST['email'];
+            $dpi = $_POST['dpi'];
+            $password = $_POST['password'];
+            $confirm_password = $_POST['confirm_password'];
+
+            if ($password !== $confirm_password) {
+                header('Location: ' . BASE_PATH . '/register?error=password_mismatch');
+                exit();
+            }
+
+            $customerModel = new CustomerModel();
+            $result = $customerModel->registerCustomer($account_number, $email, $dpi, $password, $confirm_password);
+
+            if ($result) {
+                header('Location: ' . BASE_PATH . '/login?success=registered');
+            } else {
+                header('Location: ' . BASE_PATH . '/register?error=registration_failed');
+            }
+            exit();
+        }
+
+        include 'views/auth/register_user.php';
     }
 }
 ?>
