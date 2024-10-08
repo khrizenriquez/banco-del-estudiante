@@ -38,18 +38,18 @@ require_once './views/common/logged-menu.php';
                         De:
                         <?php
                         if ($transaction['source_account_type'] == 'third_party') {
-                            echo "Cuenta de Terceros (" . htmlspecialchars($transaction['source_account_number']) . ")";
+                            echo "Cuenta de Terceros (" . @htmlspecialchars($transaction['source_account_number']) . ")";
                         } else {
-                            echo "Cuenta Bancaria (" . htmlspecialchars($transaction['source_account_number']) . ")";
+                            echo "Cuenta Bancaria (" . @htmlspecialchars($transaction['source_account_number']) . ")";
                         }
                         ?>
                         <br />
                         a:
                         <?php
                         if ($transaction['destination_account_type'] == 'third_party') {
-                            echo "Cuenta de Terceros (" . htmlspecialchars($transaction['destination_account_number']) . ")";
+                            echo "Cuenta de Terceros (" . @htmlspecialchars($transaction['destination_account_number']) . ")";
                         } else {
-                            echo "Cuenta Bancaria (" . htmlspecialchars($transaction['destination_account_number']) . ")";
+                            echo "Cuenta Bancaria (" . @htmlspecialchars($transaction['destination_account_number']) . ")";
                         }
                         ?>
                     </td>
