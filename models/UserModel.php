@@ -57,7 +57,6 @@ class UserModel {
         return $users;
     }
 
-
     public function updateUserStatus($user_id, $status) {
         $stmt = $this->db->prepare("UPDATE users SET status = ? WHERE user_id = ?");
         $stmt->bind_param('si', $status, $user_id);

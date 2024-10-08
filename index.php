@@ -14,6 +14,7 @@ require_once 'controllers/AuthController.php';
 require_once 'controllers/AdminController.php';
 require_once 'controllers/TellerController.php';
 require_once 'controllers/CustomerController.php';
+require_once 'controllers/MonitorController.php';
 
 // Parse the URL path
 $request_uri = explode('?', $_SERVER['REQUEST_URI'], 2);

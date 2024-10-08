@@ -116,32 +116,6 @@ class CustomerModel {
         return true;
     }
 
-    /*public function getThirdPartyAccounts($user_id) {
-        $stmt = $this->db->prepare("
-        SELECT ba.account_number, tpa.alias, tpa.max_amount, tpa.daily_transaction_limit
-        FROM third_party_accounts tpa
-        INNER JOIN bank_accounts ba ON tpa.account_id = ba.account_id
-        WHERE tpa.user_id = ?
-    ");
-        $stmt->bind_param('i', $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC);
-    }*/
-
-    /*public function getUserAccounts($user_id) {
-        $stmt = $this->db->prepare("
-        SELECT ba.account_number, ba.account_name, ba.balance
-        FROM user_accounts ua
-        INNER JOIN bank_accounts ba ON ua.account_id = ba.account_id
-        WHERE ua.user_id = ?
-    ");
-        $stmt->bind_param('i', $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC);
-    }*/
-
     public function getThirdPartyAccounts($user_id) {
         $stmt = $this->db->prepare("
         SELECT tpa.third_party_id, ba.account_number, tpa.alias, tpa.max_amount, tpa.daily_transaction_limit
@@ -167,86 +141,6 @@ class CustomerModel {
         $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);
     }
-
-    /*public function transferToThirdParty($user_id, $source_account_id, $third_party_account_id, $transfer_amount) {
-        // Consulta para verificar el saldo de la cuenta de origen
-        $stmt = $this->db->prepare("SELECT balance FROM bank_accounts WHERE account_id = ? AND user_id = ?");
-        $stmt->bind_param('ii', $source_account_id, $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $source_account = $result->fetch_assoc();
-
-        if (!$source_account || $source_account['balance'] < $transfer_amount) {
-            throw new Exception('Saldo insuficiente');
-        }
-
-        // Transacción para la transferencia
-        $this->db->begin_transaction();
-
-        try {
-            // Debitar de la cuenta de origen
-            $stmt = $this->db->prepare("UPDATE bank_accounts SET balance = balance - ? WHERE account_id = ?");
-            $stmt->bind_param('di', $transfer_amount, $source_account_id);
-            $stmt->execute();
-
-            // Acreditar en la cuenta de tercero
-            $stmt = $this->db->prepare("UPDATE bank_accounts SET balance = balance + ? WHERE account_id = ?");
-            $stmt->bind_param('di', $transfer_amount, $third_party_account_id);
-            $stmt->execute();
-
-            // Registrar la transacción
-            $stmt = $this->db->prepare("INSERT INTO transactions (transaction_type, source_account_id, destination_account_id, amount, user_id) VALUES ('transfer', ?, ?, ?, ?)");
-            $stmt->bind_param('iidi', $source_account_id, $third_party_account_id, $transfer_amount, $user_id);
-            $stmt->execute();
-
-            // Si todo es correcto, confirmar la transacción
-            $this->db->commit();
-
-            return true;
-        } catch (Exception $e) {
-            // En caso de error, revertir la transacción
-            $this->db->rollback();
-            throw $e;
-        }
-    }*/
-    /*public function transferToThirdParty($source_account_id, $third_party_account_id, $amount, $user_id) {
-        // Iniciar la transacción
-        $this->db->begin_transaction();
-
-        try {
-            // Debitar el monto de la cuenta de origen
-            $stmt = $this->db->prepare("
-            UPDATE bank_accounts SET balance = balance - ? WHERE account_id = ?
-        ");
-            $stmt->bind_param('di', $amount, $source_account_id);
-            $stmt->execute();
-
-            // Acreditar el monto a la cuenta de terceros
-            $stmt = $this->db->prepare("
-            UPDATE bank_accounts SET balance = balance + ? WHERE account_id = ?
-        ");
-            $stmt->bind_param('di', $amount, $third_party_account_id);
-            $stmt->execute();
-
-            // Registrar la transacción
-            $stmt = $this->db->prepare("
-            INSERT INTO transactions (transaction_type, source_account_id, destination_account_id, amount, user_id, transaction_date)
-            VALUES ('transfer', ?, ?, ?, ?, NOW())
-        ");
-            $stmt->bind_param('iidi', $source_account_id, $third_party_account_id, $amount, $user_id);
-            $stmt->execute();
-
-            // Confirmar la transacción
-            $this->db->commit();
-            return true;
-
-        } catch (Exception $e) {
-            // Revertir en caso de error
-            $this->db->rollback();
-            throw new Exception("Error al realizar la transferencia: " . $e->getMessage());
-        }
-    }*/
-
 
     public function getThirdPartyAccountById($third_party_account_id) {
         $stmt = $this->db->prepare("SELECT * FROM third_party_accounts WHERE third_party_id = ?");
@@ -295,21 +189,10 @@ class CustomerModel {
         return $result->num_rows > 0;
     }
 
-    /*public function transferToThirdParty($source_account_id, $destination_account_id, $amount, $user_id) {
-        $stmt = $this->db->prepare("
-        INSERT INTO transactions (transaction_type, source_account_id, destination_account_id, amount, transaction_date, user_id)
-        VALUES ('transfer', ?, ?, ?, NOW(), ?)
-    ");
-        $stmt->bind_param('iidi', $source_account_id, $destination_account_id, $amount, $user_id);
-
-        return $stmt->execute();
-    }*/
-
     public function transferToThirdParty($source_account_id, $third_party_account_id, $amount, $user_id) {
         $this->db->begin_transaction();
 
         try {
-            // Registrar la transacción de salida (desde la cuenta del usuario)
             $insertTransaction = $this->db->prepare("
             INSERT INTO transactions (transaction_type, source_account_id, destination_account_id, amount, user_id)
             VALUES ('transfer', ?, ?, ?, ?)
@@ -317,7 +200,6 @@ class CustomerModel {
             $insertTransaction->bind_param('iidi', $source_account_id, $third_party_account_id, $amount, $user_id);
             $insertTransaction->execute();
 
-            // Confirmar la transacción
             $this->db->commit();
 
             return true;
@@ -326,7 +208,6 @@ class CustomerModel {
             throw $e;
         }
     }
-
 
     public function getAccountBalance($account_id) {
         $stmt = $this->db->prepare("
@@ -346,8 +227,4 @@ class CustomerModel {
 
         return $result['balance'];
     }
-
-
-
-
 }

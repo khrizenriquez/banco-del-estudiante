@@ -2,6 +2,7 @@
 require_once 'LoginController.php';
 require_once 'config/config.php';
 require_once 'models/CustomerModel.php';
+require_once 'models/SessionModel.php';
 
 class AuthController {
     public function login() {
@@ -23,12 +24,38 @@ class AuthController {
                 throw new Exception('Error: La sesión no se ha guardado correctamente.');
             }
 
+            $ip_address = $this->getUserIP();
+            $device_info = $this->getDeviceInfo();
+            $location = 'Desconocida';
+
+            $this->logSessionMetadata($user['id'], $ip_address, $device_info, $location);
+
             $this->redirectToDashboard($user['role']);
         } else {
             header('Location: ' . BASE_PATH . '/login?error=invalid_credentials');
             exit();
         }
     }
+
+    private function getUserIP() {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            return $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            return $_SERVER['REMOTE_ADDR'];
+        }
+    }
+
+    private function getDeviceInfo() {
+        return $_SERVER['HTTP_USER_AGENT'];
+    }
+
+    private function logSessionMetadata($user_id, $ip_address, $device_info, $location) {
+        $sessionModel = new SessionModel();
+        $sessionModel->logSession($user_id, $ip_address, $device_info, $location);
+    }
+
 
     public function showLoginForm() {
         @session_start();

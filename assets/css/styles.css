@@ -5,3 +5,9 @@
     color: black;
     font-weight: bold;
 }
+.chart-container {
+    position: relative;
+    width: 50%;
+    height: 300px;
+    margin: 20px auto;
+}

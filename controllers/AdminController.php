@@ -19,7 +19,7 @@ class AdminController {
     public function showMonitor() {
         $userModel = new UserModel();
         $users = $userModel->getAllUsers();
-        include 'views/admin/dashboard.php';
+        include 'views/admin/monitor_transfers.php';
     }
 
     public function showCreateUser() {
