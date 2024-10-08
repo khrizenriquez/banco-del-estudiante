@@ -1,5 +1,5 @@
 <?php
-$page_title = "Agregar cuentas de terceros :: Banco del estudiante";
+$page_title = "Transferir a cuentas de terceros :: Banco del estudiante";
 require_once './views/common/logged-header.php';
 ?>
 
@@ -9,19 +9,46 @@ require_once './views/common/logged-header.php';
 require_once './views/common/logged-menu.php';
 ?>
 
-
 <section class="container is-max-tablet mt-6">
     <h1 class="title">Transferir a Cuenta de Terceros</h1>
 
-    <form action="/user/transferencia-terceros" method="POST">
+    <?php if (isset($_GET['error'])): ?>
+        <div class="notification is-danger">
+            <?= htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8'); ?>
+        </div>
+    <?php endif; ?>
+    <?php if (isset($_GET['success']) && $_GET['success'] === 'transfer_completed'): ?>
+        <div class="notification is-success">
+            ¡La transferencia se ha completado exitosamente!
+        </div>
+    <?php endif; ?>
+
+    <form action="<?= BASE_PATH; ?>/user/transferir-terceros" method="POST">
+        <div class="field">
+            <label class="label">Seleccionar Cuenta de Origen</label>
+            <div class="control">
+                <div class="select">
+                    <select name="source_account_id" required>
+                        <?php foreach ($user_accounts as $account): ?>
+                            <option value="<?= htmlspecialchars($account['account_id'] ?? ''); ?>">
+                                <?= htmlspecialchars($account['account_name'] ?? 'Sin alias'); ?> - <?= htmlspecialchars($account['account_number'] ?? 'Sin número'); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <div class="field">
             <label class="label">Seleccionar Cuenta de Terceros</label>
             <div class="control">
                 <div class="select">
                     <select name="third_party_account_id" required>
-                        <option value="1">Cuenta 1 (Alias: Cuenta Personal)</option>
-                        <option value="2">Cuenta 2 (Alias: Ahorros)</option>
-                        <option value="3">Cuenta 3 (Alias: Emergencias)</option>
+                        <?php foreach ($third_party_accounts as $account): ?>
+                            <option value="<?= htmlspecialchars($account['third_party_id'] ?? ''); ?>">
+                                <?= htmlspecialchars($account['alias'] ?? 'Sin alias'); ?> - <?= htmlspecialchars($account['account_number'] ?? 'Sin número'); ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>
@@ -40,10 +67,8 @@ require_once './views/common/logged-menu.php';
             </div>
         </div>
     </form>
+
 </section>
-
-
-
 
 <?php
 require_once './views/common/logged-scripts.php';

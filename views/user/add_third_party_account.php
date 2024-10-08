@@ -9,11 +9,42 @@ require_once './views/common/logged-header.php';
 require_once './views/common/logged-menu.php';
 ?>
 
-
 <section class="container is-max-tablet mt-6">
     <h1 class="title">Agregar Cuenta de Terceros</h1>
 
-    <form action="/user/agregar-cuenta-terceros" method="POST">
+    <?php if (isset($_GET['success'])): ?>
+        <div class="notification is-success">
+            <?php
+            switch ($_GET['success']) {
+                case 'third_party_added':
+                    echo 'La cuenta de terceros ha sido agregada con éxito.';
+                    break;
+                default:
+                    echo 'Operación realizada con éxito.';
+            }
+            ?>
+        </div>
+    <?php elseif (isset($_GET['error'])): ?>
+        <div class="notification is-danger">
+            <?php
+            switch ($_GET['error']) {
+                case 'add_failed':
+                    echo 'Error al agregar la cuenta de terceros. Inténtalo de nuevo.';
+                    break;
+                case 'La cuenta bancaria no existe.':
+                    echo 'La cuenta bancaria ingresada no existe. Por favor verifica los datos.';
+                    break;
+                case 'invalid_account':
+                    echo 'La cuenta ingresada es inválida.';
+                    break;
+                default:
+                    echo 'Ha ocurrido un error inesperado. Por favor, intenta nuevamente.';
+            }
+            ?>
+        </div>
+    <?php endif; ?>
+
+    <form action="<?= BASE_PATH ?>/user/agregar-terceros" method="POST">
         <div class="field">
             <label class="label">Número de Cuenta</label>
             <div class="control">
@@ -49,8 +80,6 @@ require_once './views/common/logged-menu.php';
         </div>
     </form>
 </section>
-
-
 
 <?php
 require_once './views/common/logged-scripts.php';

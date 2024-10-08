@@ -7,24 +7,40 @@ return [
     'forgot-password' => 'AuthController@showForgotPasswordForm',
     'logout' => 'AuthController@logout',
     'server-info' => 'AuthController@showServerInfo',
+    'register-customer' => 'AuthController@register',
+    //'login-user' => 'AuthController@login',
 
-    // Admin routes
-    'admin/dashboard' => 'AdminController@dashboard',
-    'admin/monitor' => 'AdminController@dashboard',
-    'admin/usuarios' => 'AdminController@createUser',
-    'admin/usuarios/{id}' => 'AdminController@editUser',
-    'admin/usuarios/{id}/bloquear' => 'AdminController@blockUser',
+    // Admin routes - Pages
+    'admin/dashboard' => 'AdminController@showDashboard',
+    'admin/monitor' => 'AdminController@showMonitor',
+    'admin/usuarios' => 'AdminController@showCreateUser',
+    'admin/usuarios/{id}' => 'AdminController@showEditUser',
 
-    // Teller routes
-    'teller/dashboard' => 'TellerController@dashboard',
-    'teller/usuarios' => 'TellerController@createAccount',
-    'teller/usuarios/{id}' => 'TellerController@editUser',
-    'teller/depositos' => 'TellerController@deposit',
-    'teller/retiros' => 'TellerController@withdraw',
+    // Admin routes - Services
+    'admin/create-user' => 'AdminController@createTeller',
+    'admin/update-user' => 'AdminController@updateUser',
+    'admin/usuarios/{id}/toggle-status' => 'AdminController@toggleUserStatus',
 
-    // User routes
-    'user/transferencia-a-terceros' => 'UserController@viewTransfer',
-    'user/dashboard' => 'UserController@dashboard',
-    'user/agregar-cuentas-de-terceros' => 'UserController@addThirdPartyAccount',
-    'user/estado-de-cuenta' => 'UserController@viewAccountStatement',
+    // Teller routes - Pages
+    'teller/dashboard' => 'TellerController@showDashboard',
+    'teller/usuarios' => 'TellerController@showCreateAccount',
+    'teller/usuarios/{id}' => 'TellerController@showEditUser',
+    'teller/depositos' => 'TellerController@showDeposit',
+    'teller/retiros' => 'TellerController@showWithdraw',
+
+    // Teller routes - Services
+    'teller/create-user' => 'TellerController@storeAccount',
+    'teller/update-user' => 'TellerController@updateUser',
+    'teller/deposito' => 'TellerController@handleDeposit',
+    'teller/retiro' => 'TellerController@handleWithdraw',
+
+    // Customer routes - Pages
+    'user/transferencia-a-terceros' => 'CustomerController@viewTransfer',
+    'user/dashboard' => 'CustomerController@showManageAccounts',
+    'user/agregar-cuentas-de-terceros' => 'CustomerController@showAddThirdPartyForm',
+    'user/estado-de-cuenta' => 'CustomerController@viewAccountStatement',
+
+    // User routes - Services
+    'user/agregar-terceros' => 'CustomerController@addThirdPartyAccount',
+    'user/transferir-terceros' => 'CustomerController@handleTransfer',
 ];

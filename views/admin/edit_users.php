@@ -1,5 +1,5 @@
 <?php
-$page_title = "Editar cajero :: Banco del estudiante";
+$page_title = "Editar Usuario :: Banco del estudiante";
 require_once './views/common/logged-header.php';
 ?>
 
@@ -9,8 +9,12 @@ require_once './views/common/logged-header.php';
 require_once './views/common/logged-menu.php';
 ?>
 
+<?php if (isset($_GET['error']) && $_GET['error'] == 'edit_admin_not_allowed'): ?>
+    <p class="error">Ocurrió un error.</p>
+<?php endif; ?>
+
 <section class="container is-max-tablet mt-6">
-    <form action="/teller/edit-user" method="POST">
+    <form action="<?= BASE_PATH; ?>/admin/update-user" method="POST">
         <input type="hidden" name="user_id" value="<?= htmlspecialchars(@$user->user_id); ?>">
 
         <div class="field">
@@ -26,7 +30,17 @@ require_once './views/common/logged-menu.php';
         <div class="field">
             <label class="label has-text-primary-00">Nombre</label>
             <div class="control has-icons-left">
-                <input class="input" type="text" name="account_name" value="<?= htmlspecialchars(@$user->first_name.' '.@$user->last_name); ?>">
+                <input class="input" type="text" name="account_name" value="<?= htmlspecialchars(@$user->first_name); ?>" required>
+                <span class="icon is-small is-left">
+                    <i class="fa-solid fa-user"></i>
+                </span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label has-text-primary-00">Apellido</label>
+            <div class="control has-icons-left">
+                <input class="input" type="text" name="account_lastname" value="<?= htmlspecialchars(@$user->last_name); ?>" required>
                 <span class="icon is-small is-left">
                     <i class="fa-solid fa-user"></i>
                 </span>
@@ -59,7 +73,6 @@ require_once './views/common/logged-menu.php';
             </div>
         </div>
     </form>
-
 </section>
 
 <?php

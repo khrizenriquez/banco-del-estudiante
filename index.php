@@ -13,14 +13,20 @@ error_reporting(E_ALL);
 require_once 'controllers/AuthController.php';
 require_once 'controllers/AdminController.php';
 require_once 'controllers/TellerController.php';
-require_once 'controllers/UserController.php';
+require_once 'controllers/CustomerController.php';
 
 // Parse the URL path
 $request_uri = explode('?', $_SERVER['REQUEST_URI'], 2);
-$path = trim(str_replace('/desarrolloweb/banco-del-estudiante', '', $request_uri[0]), '/');
+$path = trim(str_replace(BASE_PATH, '', $request_uri[0]), '/');
 
 // Default to home if no path is provided
 $action = $path ?: 'home';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($path === 'login' || $path === 'index.php')) {
+    $authController = new AuthController();
+    $authController->login();
+    exit();
+}
 
 // Update for dynamic routes
 foreach ($routes as $route => $controllerAction) {
@@ -42,44 +48,4 @@ foreach ($routes as $route => $controllerAction) {
 // Default to register if no action matches
 $authController = new AuthController();
 $authController->showLoginForm();
-
-//switch ($action) {
-//    case 'login':
-//        $authController = new AuthController();
-//        $authController->showLoginForm();
-//        break;
-//    case 'register':
-//        $authController = new AuthController();
-//        $authController->showRegisterForm();
-//        break;
-//    case 'forgot-password':
-//        $authController = new AuthController();
-//        $authController->showForgotPasswordForm();
-//        break;
-//    case 'logout':
-//        $authController = new AuthController();
-//        $authController->logout();
-//        break;
-//    // Admin actions
-//    case 'admin/dashboard':
-//        $adminController = new AdminController();
-//        $adminController->dashboard();
-//        break;
-//    // Teller actions
-//    case 'teller-dashboard':
-//        $tellerController = new TellerController();
-//        $tellerController->dashboard();
-//        break;
-//    // User actions
-//    case 'user-dashboard':
-//        $userController = new UserController();
-//        $userController->dashboard();
-//        break;
-//    default:
-//        // Default to register if no action matches
-//        //$authController = new AuthController();
-//        //$authController->showLoginForm();
-//        include 'views/auth/info.php';
-//        break;
-//}
 ?>
