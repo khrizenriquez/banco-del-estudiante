@@ -9,13 +9,13 @@ variables:
   azureSubscription: '6b74cdc4-c338-4e97-a361-4aee8bc9e9f0'
 
   # Web app name
-  webAppName: 'banco-del-estudiante'
+  webAppName: 'banco-del-estudiante2'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
   # Environment name
-  environmentName: 'banco-del-estudiante'
+  environmentName: 'banco-del-estudiante2'
 
   # Root folder under which your project files are available.
   rootFolder: $(System.DefaultWorkingDirectory)
@@ -72,7 +72,7 @@ stages:
             deploy:
               steps:
                 - task: AzureWebApp@1
-                  displayName: 'Deploy Azure Web App : banco-del-estudiante'
+                  displayName: 'Deploy Azure Web App : banco-del-estudiante2'
                   inputs:
                     azureSubscription: $(azureSubscription)
                     appName: $(webAppName)
