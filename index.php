@@ -1,20 +1,25 @@
 <?php
-//  Kind of router to handle the different actions
-require_once 'config/config.php';
-
-$routes = require_once 'config/routes.php';
-
 // ----------------------------------------------------- Comment these section after testing
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 // ----------------------------------------------------- Comment these section after testing
 
+//  Kind of router to handle the different actions
+require_once 'config/config.php';
+
+//  To log every request
+require_once 'utils/LogHandler.php';
+captureRequestLog();
+
+$routes = require_once 'config/routes.php';
+
 require_once 'controllers/AuthController.php';
 require_once 'controllers/AdminController.php';
 require_once 'controllers/TellerController.php';
 require_once 'controllers/CustomerController.php';
 require_once 'controllers/MonitorController.php';
+require_once 'controllers/MaintenanceController.php';
 
 // Parse the URL path
 $request_uri = explode('?', $_SERVER['REQUEST_URI'], 2);

@@ -8,6 +8,7 @@ return [
     'logout' => 'AuthController@logout',
     'server-info' => 'AuthController@showServerInfo',
     'register-customer' => 'AuthController@register',
+    'statistics' => 'MaintenanceController@showMaintenance',
     //'login-user' => 'AuthController@login',
 
     // Admin routes - Pages
