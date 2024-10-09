@@ -1,7 +1,7 @@
 <?php
 define('LOG_FILE_PATH', __DIR__ . '/../logs/banco-del-estudiante.log');
 
-function logRequest($message) {
+/*function logRequest($message) {
     $logDir = __DIR__ . '/../logs';
 
     if (!is_dir($logDir)) {
@@ -26,7 +26,21 @@ function logRequest($message) {
     } else {
         throw new Exception("No se pudo abrir el archivo de log para escritura.");
     }
+}*/
+
+function logRequest($message) {
+    $logFile = __DIR__ . '/../logs/banco-del-estudiante.log';
+
+    $fileHandle = fopen($logFile, 'a');
+
+    if ($fileHandle) {
+        fwrite($fileHandle, $message . PHP_EOL);
+        fclose($fileHandle);
+    } else {
+        throw new Exception("No se pudo abrir el archivo de log para escritura.");
+    }
 }
+
 
 
 function checkLogRotation() {
