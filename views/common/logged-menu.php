@@ -52,6 +52,9 @@ $last_menu_label = key($menu_options);
                     <?= htmlspecialchars($option); ?>
                 </a>
             <?php endforeach; ?>
+            <?php if ($_SESSION['role'] === 'admin'): ?>
+                <a class="navbar-item" href="<?= BASE_PATH; ?>/statistics">Estadísticas del Servidor Web</a>
+            <?php endif; ?>
         </div>
 
         <div class="navbar-end">
