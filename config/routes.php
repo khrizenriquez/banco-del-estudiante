@@ -12,7 +12,7 @@ return [
 
     // Admin routes - Pages
     'admin/dashboard' => 'AdminController@showDashboard',
-    'admin/monitor' => 'AdminController@showMonitor',
+    'admin/monitor' => 'MonitorController@showMonitor',
     'admin/usuarios' => 'AdminController@showCreateUser',
     'admin/usuarios/{id}' => 'AdminController@showEditUser',
 

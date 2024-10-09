@@ -63,7 +63,7 @@ require_once './views/common/header.php';
                     </div>
                 </div>
             </form>
-            <a href="<?= BASE_PATH; ?>/forgot-password">¿Olvidaste tú contraseña?</a>
+            <!--<a href="<?php /*= BASE_PATH; */?>/forgot-password">¿Olvidaste tú contraseña?</a>-->
             <a href="<?= BASE_PATH; ?>/register">Crear cuenta</a>
         </div>
     </div>
