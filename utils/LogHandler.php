@@ -31,8 +31,8 @@ function logRequest($message) {
 
 function checkLogRotation() {
     $logFile = LOG_FILE_PATH;
-    //$maxFileSize = 5 * 1024 * 1024;
-    $maxFileSize = 5 * 1024; // 5 KB
+    $maxFileSize = 10 * 1024 * 1024; // 10 MB
+    //$maxFileSize = 5 * 1024; // 5 KB
 
     if (file_exists($logFile) && filesize($logFile) > $maxFileSize) {
         $newName = __DIR__ . '/../logs/banco-del-estudiante-' . date('Y-m-d-His') . '.log';
