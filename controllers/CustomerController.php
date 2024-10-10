@@ -106,7 +106,9 @@ class CustomerController {
                 header('Location: ' . BASE_PATH . '/user/agregar-cuentas-de-terceros?error=add_failed');
             }
         } catch (Exception $e) {
-            header('Location: ' . BASE_PATH . '/user/agregar-cuentas-de-terceros?error=' . urlencode($e->getMessage()));
+            var_dump($e->getMessage());
+            exit();
+            header('Location: ' . BASE_PATH . '/user/agregar-cuentas-de-terceros?error=add_failed');
         }
 
         exit();

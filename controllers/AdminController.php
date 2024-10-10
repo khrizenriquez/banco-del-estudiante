@@ -77,6 +77,7 @@ class AdminController {
         $email = $_POST['email'];
         $password = $_POST['password'];
         $confirm_password = $_POST['confirm_password'];
+        $dpi = $_POST['dpi'];
 
         // The best option is validate the data before send it to the database
         if ($password !== $confirm_password) {
@@ -87,7 +88,7 @@ class AdminController {
         $created_by = $_SESSION['user_id'];
 
         $userModel = new UserModel();
-        $result = $userModel->createTeller($first_name, $last_name, $username, $email, $password, $created_by);
+        $result = $userModel->createTeller($first_name, $last_name, $username, $email, $password, $dpi, $created_by);
 
         if ($result) {
             header('Location: '.BASE_PATH.'/admin/dashboard?success=teller_created');

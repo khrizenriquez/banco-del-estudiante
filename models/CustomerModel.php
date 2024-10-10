@@ -96,12 +96,19 @@ class CustomerModel {
         $stmt->execute();
         $result = $stmt->get_result();
 
-        if ($result->num_rows === 0) {
-            throw new Exception("La cuenta bancaria no existe.");
-        }
+        if ($result->num_rows > 0) {
+            $account = $result->fetch_assoc();
+            $account_id = $account['account_id'];
+        } else {
+            $stmt = $this->db->prepare("
+            INSERT INTO bank_accounts (account_number, account_name, balance) 
+            VALUES (?, 'Cuenta de terceros', 0.00)
+        ");
+            $stmt->bind_param('s', $account_number);
+            $stmt->execute();
 
-        $account = $result->fetch_assoc();
-        $account_id = $account['account_id'];
+            $account_id = $this->db->insert_id;
+        }
 
         $stmt = $this->db->prepare("
         INSERT INTO third_party_accounts (user_id, account_id, alias, max_amount, daily_transaction_limit)

@@ -7,10 +7,12 @@ class UserModel {
         $this->db = Database::getConnection();
     }
 
-    public function createTeller($first_name, $last_name, $username, $email, $password, $created_by) {
-        $stmt = $this->db->prepare("CALL create_user(?, ?, ?, ?, ?, 'teller', NULL, NULL, ?)");
+    //public function createTeller($first_name, $last_name, $username, $email, $password, $created_by) {
+    public function createTeller($first_name, $last_name, $username, $email, $password, $dpi, $created_by) {
 
-        $stmt->bind_param('sssssi', $first_name, $last_name, $username, $email, $password, $created_by);
+        $stmt = $this->db->prepare("CALL create_user(?, ?, ?, ?, ?, 'teller', 'active', NOW(), ?, ?)");
+
+        $stmt->bind_param('sssssis', $first_name, $last_name, $username, $email, $password, $dpi, $created_by);
 
         return $stmt->execute();
     }
