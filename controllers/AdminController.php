@@ -77,7 +77,7 @@ class AdminController {
         $email = $_POST['email'];
         $password = $_POST['password'];
         $confirm_password = $_POST['confirm_password'];
-        $dpi = $_POST['dpi'];
+        $dpi = isset($_POST['dpi']) ? $_POST['dpi'] : null;
 
         // The best option is validate the data before send it to the database
         if ($password !== $confirm_password) {

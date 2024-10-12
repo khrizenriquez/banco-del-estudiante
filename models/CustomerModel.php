@@ -7,7 +7,11 @@ class CustomerModel {
         $this->db = Database::getConnection();
     }
 
-    public function registerCustomer($account_number, $email, $dpi, $password, $confirm_password) {
+    /*
+     * Debido a que no se pueden utilizar procedimientos almacenados en el hosting
+     * se ha decidido utilizar consultas preparadas para realizar las operaciones
+     * */
+    /*public function registerCustomer($account_number, $email, $dpi, $password, $confirm_password) {
         $stmt = $this->db->prepare("CALL register_customer(?, ?, ?, ?, ?)");
         $stmt->bind_param('sssss', $account_number, $email, $dpi, $password, $confirm_password);
 
@@ -15,6 +19,45 @@ class CustomerModel {
             return true;
         } else {
             throw new Exception("Error al registrar o actualizar el usuario.");
+        }
+    }*/
+    public function registerCustomer($account_number, $email, $dpi, $password, $confirm_password) {
+        if ($password !== $confirm_password) {
+            throw new Exception("Las contraseñas no coinciden.");
+        }
+
+        $hashed_password = hash('sha256', $password);
+
+        $stmt = $this->db->prepare("
+        SELECT ba.account_id, ua.user_id
+        FROM bank_accounts ba
+        INNER JOIN user_accounts ua ON ba.account_id = ua.account_id
+        WHERE ba.account_number = ?
+    ");
+        $stmt->bind_param('s', $account_number);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $account = $result->fetch_assoc();
+
+        if (!$account) {
+            throw new Exception("La cuenta bancaria no existe.");
+        }
+
+        if (!isset($account['user_id'])) {
+            throw new Exception("No se encontró un usuario asociado a esta cuenta bancaria.");
+        }
+
+        $stmt = $this->db->prepare("
+        UPDATE users 
+        SET email = ?, password = ?, dpi = ?
+        WHERE user_id = ?
+    ");
+        $stmt->bind_param('sssi', $email, $hashed_password, $dpi, $account['user_id']);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            throw new Exception("Error al actualizar el usuario.");
         }
     }
 

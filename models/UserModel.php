@@ -7,14 +7,57 @@ class UserModel {
         $this->db = Database::getConnection();
     }
 
-    //public function createTeller($first_name, $last_name, $username, $email, $password, $created_by) {
-    public function createTeller($first_name, $last_name, $username, $email, $password, $dpi, $created_by) {
+    /*
+     * Debido a que no se pueden utilizar procedimientos almacenados en el hosting
+     * se ha decidido utilizar consultas preparadas para realizar las operaciones
+     * */
+    /*public function createTeller($first_name, $last_name, $username, $email, $password, $dpi, $created_by) {
 
         $stmt = $this->db->prepare("CALL create_user(?, ?, ?, ?, ?, 'teller', 'active', NOW(), ?, ?)");
 
         $stmt->bind_param('sssssis', $first_name, $last_name, $username, $email, $password, $dpi, $created_by);
 
         return $stmt->execute();
+    }*/
+    public function createTeller($first_name, $last_name, $username, $email, $password, $dpi, $created_by) {
+        $created_at = date('Y-m-d H:i:s');
+
+        // Verificar si el username o email ya existen
+        $stmt = $this->db->prepare("SELECT COUNT(*) AS count FROM users WHERE username = ? OR email = ?");
+        $stmt->bind_param('ss', $username, $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+
+        if ($row['count'] > 0) {
+            throw new Exception("El nombre de usuario o email ya existe.");
+        } else {
+            $hashed_password = null;
+            if ($password !== null) {
+                $hashed_password = hash('sha256', $password); // Encriptar la contraseña con SHA-256
+            }
+
+            // Si el dpi es null, se asigna NULL explícitamente
+            if ($dpi === null) {
+                $stmt = $this->db->prepare("
+            INSERT INTO users (first_name, last_name, username, email, password, user_type, status, created_at, created_by, dpi)
+            VALUES (?, ?, ?, ?, ?, 'teller', 'active', ?, ?, NULL)
+        ");
+                $stmt->bind_param('sssssis', $first_name, $last_name, $username, $email, $hashed_password, $created_at, $created_by);
+            } else {
+                $stmt = $this->db->prepare("
+            INSERT INTO users (first_name, last_name, username, email, password, user_type, status, created_at, created_by, dpi)
+            VALUES (?, ?, ?, ?, ?, 'teller', 'active', ?, ?, ?)
+        ");
+                $stmt->bind_param('ssssssis', $first_name, $last_name, $username, $email, $hashed_password, $created_at, $created_by, $dpi);
+            }
+
+            if (!$stmt->execute()) {
+                throw new Exception("Error al crear el usuario: " . $stmt->error);
+            }
+
+            return true;
+        }
     }
 
     public function getAllUsers() {
@@ -120,7 +163,11 @@ class UserModel {
         return $stmt->execute();
     }
 
-    public function createCustomer($account_name, $account_number, $email, $dpi, $created_by, $initial_balance = 0) {
+    /*
+     * Debido a que no se pueden utilizar procedimientos almacenados en el hosting
+     * se ha decidido utilizar consultas preparadas para realizar las operaciones
+     * */
+    /*public function createCustomer($account_name, $account_number, $email, $dpi, $created_by, $initial_balance = 0) {
         $this->db->begin_transaction();
 
         try {
@@ -185,6 +232,86 @@ class UserModel {
         } catch (Exception $e) {
             $this->db->rollback();
             return false;
+        }
+    }*/
+    public function createCustomer($account_name, $account_number, $email, $dpi, $created_by, $initial_balance = 0) {
+        $this->db->begin_transaction();
+
+        try {
+            $name_parts = explode(' ', $account_name, 2);
+            $first_name = $name_parts[0];
+            $last_name = isset($name_parts[1]) ? $name_parts[1] : '';
+
+            $stmt = $this->db->prepare("SELECT user_id FROM users WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows === 1) {
+                $user = $result->fetch_assoc();
+                $user_id = $user['user_id'];
+            } else {
+                $password = null;
+                $username = $email;
+
+                $stmt = $this->db->prepare("SELECT COUNT(*) AS count FROM users WHERE username = ? OR email = ?");
+                $stmt->bind_param('ss', $username, $email);
+                $stmt->execute();
+                $checkResult = $stmt->get_result();
+                $row = $checkResult->fetch_assoc();
+
+                if ($row['count'] > 0) {
+                    throw new Exception("El nombre de usuario o email ya existe.");
+                }
+
+                $stmt = $this->db->prepare("
+                INSERT INTO users (first_name, last_name, username, email, password, user_type, status, created_at, created_by, dpi)
+                VALUES (?, ?, ?, ?, ?, 'customer', 'active', NOW(), ?, ?)
+            ");
+                $stmt->bind_param("sssssis", $first_name, $last_name, $username, $email, $password, $created_by, $dpi);
+                $stmt->execute();
+
+                $stmt = $this->db->prepare("SELECT user_id FROM users WHERE email = ?");
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if ($result->num_rows === 1) {
+                    $user = $result->fetch_assoc();
+                    $user_id = $user['user_id'];
+                } else {
+                    throw new Exception("Error al crear o recuperar usuario.");
+                }
+            }
+
+            if (!$user_id) {
+                throw new Exception("Error al crear o recuperar usuario.");
+            }
+
+            $stmt = $this->db->prepare("
+            INSERT INTO bank_accounts (account_number, account_name, balance, created_at)
+            VALUES (?, ?, ?, NOW())
+        ");
+            $stmt->bind_param("ssd", $account_number, $account_name, $initial_balance);
+            $stmt->execute();
+
+            $account_id = $this->db->insert_id;
+
+            if (!$account_id) {
+                throw new Exception("Error al crear cuenta bancaria.");
+            }
+
+            $stmt = $this->db->prepare("
+            INSERT INTO user_accounts (user_id, account_id) VALUES (?, ?)
+        ");
+            $stmt->bind_param("ii", $user_id, $account_id);
+            $stmt->execute();
+
+            $this->db->commit();
+            return true;
+
+        } catch (Exception $e) {
+            $this->db->rollback();
+            throw $e;
         }
     }
 

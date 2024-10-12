@@ -116,7 +116,7 @@ class AuthController {
         exit();
     }
 
-    public function register() {
+    /*public function register() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $account_number = $_POST['account_number'];
             $email = $_POST['email'];
@@ -131,6 +131,33 @@ class AuthController {
 
             $customerModel = new CustomerModel();
             $result = $customerModel->registerCustomer($account_number, $email, $dpi, $password, $confirm_password);
+
+            if ($result) {
+                header('Location: ' . BASE_PATH . '/login?success=registered');
+            } else {
+                header('Location: ' . BASE_PATH . '/register?error=registration_failed');
+            }
+            exit();
+        }
+
+        include 'views/auth/register_user.php';
+    }*/
+    public function register() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $account_number = $_POST['account_number'];
+            $email = $_POST['email'];
+            $dpi = $_POST['dpi'];
+            $password = $_POST['password'];
+            $confirm_password = $_POST['confirm_password'];
+            $created_by = $_SESSION['user_id'];
+
+            if ($password !== $confirm_password) {
+                header('Location: ' . BASE_PATH . '/register?error=password_mismatch');
+                exit();
+            }
+
+            $customerModel = new CustomerModel();
+            $result = $customerModel->registerCustomer($account_number, $email, $dpi, $password, $confirm_password, $created_by);
 
             if ($result) {
                 header('Location: ' . BASE_PATH . '/login?success=registered');
