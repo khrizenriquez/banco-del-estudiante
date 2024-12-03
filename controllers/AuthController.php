@@ -1,42 +1,119 @@
 <?php
+require_once 'LoginController.php';
+require_once 'config/config.php';
+require_once 'models/CustomerModel.php';
+
 class AuthController {
     public function login() {
-        $username = $_POST['username'];
+        @session_start();
+
+        $username = $_POST['email'];
         $password = $_POST['password'];
 
-        $userModel = new User();
-        $user = $userModel->authenticate($username, $password);
+        $loginController = new LoginController();
+        $user = $loginController->authenticate($username, $password);
 
         if ($user) {
-            session_start();
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['first_name'] = $user['first_name'];
 
-            switch ($user['role']) {
-                case 'admin':
-                    header('Location: index.php?action=admin_dashboard');
-                    break;
-                case 'teller':
-                    header('Location: index.php?action=teller_dashboard');
-                    break;
-                case 'user':
-                    header('Location: index.php?action=user_dashboard');
-                    break;
-                default:
-                    session_destroy();
-                    header('Location: index.php?error=invalid_role');
-                    break;
+            if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
+                throw new Exception('Error: La sesión no se ha guardado correctamente.');
             }
-            exit();
+
+            $this->redirectToDashboard($user['role']);
         } else {
-            header('Location: index.php?action=login&error=invalid_credentials');
+            header('Location: ' . BASE_PATH . '/login?error=invalid_credentials');
             exit();
         }
     }
 
     public function showLoginForm() {
-        include 'views/auth/login.php';
+        @session_start();
+
+        if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
+            $this->redirectToDashboard($_SESSION['role']);
+        } else {
+            include 'views/auth/login.php';
+        }
     }
 
+    private function redirectToDashboard($role) {
+        switch ($role) {
+            case 'admin':
+                header('Location: ' . BASE_PATH . '/admin/dashboard');
+                break;
+            case 'teller':
+                header('Location: ' . BASE_PATH . '/teller/dashboard');
+                break;
+            case 'customer':
+                header('Location: ' . BASE_PATH . '/user/dashboard');
+                break;
+            default:
+                session_destroy();
+                header('Location: ' . BASE_PATH . '/login?error=invalid_role');
+                //include 'views/auth/register_user.php';
+                break;
+        }
+        exit();
+    }
+    public function showRegisterForm() {
+        @session_start();
+
+        if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
+            $this->redirectToDashboard($_SESSION['role']);
+        } else {
+            include 'views/auth/register_user.php';
+        }
+    }
+
+    public function showForgotPasswordForm() {
+        @session_start();
+
+        if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
+            $this->redirectToDashboard($_SESSION['role']);
+        } else {
+            include 'views/auth/forgot_password.php';
+        }
+    }
+
+    public function showServerInfo() {
+        include 'views/auth/info.php';
+    }
+
+    public function logout() {
+        session_destroy();
+        header('Location: ' . BASE_PATH . '/login');
+        exit();
+    }
+
+    public function register() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $account_number = $_POST['account_number'];
+            $email = $_POST['email'];
+            $dpi = $_POST['dpi'];
+            $password = $_POST['password'];
+            $confirm_password = $_POST['confirm_password'];
+
+            if ($password !== $confirm_password) {
+                header('Location: ' . BASE_PATH . '/register?error=password_mismatch');
+                exit();
+            }
+
+            $customerModel = new CustomerModel();
+            $result = $customerModel->registerCustomer($account_number, $email, $dpi, $password, $confirm_password);
+
+            if ($result) {
+                header('Location: ' . BASE_PATH . '/login?success=registered');
+            } else {
+                header('Location: ' . BASE_PATH . '/register?error=registration_failed');
+            }
+            exit();
+        }
+
+        include 'views/auth/register_user.php';
+    }
 }
 ?>

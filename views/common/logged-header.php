@@ -1,6 +1,7 @@
 <?php
 require_once 'config/config.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,5 +14,5 @@ require_once 'config/config.php';
 
     <link rel="stylesheet" href="<?= BASE_PATH; ?>/assets/css/vendor/bulma/bulma.min.css">
     <link rel="stylesheet" href="<?= BASE_PATH; ?>/assets/css/general.css">
-    <link rel="stylesheet" href="<?= BASE_PATH; ?>/assets/css/auth.css">
+    <link rel="stylesheet" href="<?= BASE_PATH; ?>/assets/css/styles.css">
 </head>
